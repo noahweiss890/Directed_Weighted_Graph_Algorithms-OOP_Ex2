@@ -76,4 +76,5 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
     public int getMC() {
         return 0;
     }
+
 }
