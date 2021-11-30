@@ -9,11 +9,11 @@ import java.util.Iterator;
 public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
     private HashMap<Integer, NodeData> nodes;
-    private ArrayList<EdgeData> edges;
+    private HashMap<String, EdgeData> edges;
 
     public MyDirectedWeightedGraph() {
         nodes = new HashMap<Integer, NodeData>();
-        edges = new ArrayList<EdgeData>();
+        edges = new HashMap<String, EdgeData>();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
     @Override
     public void connect(int src, int dest, double w) {
         Edge e = new Edge(src, dest, w);
-        edges.add(e);
+        edges.put(src+""+dest, e);
         ((Node)nodes.get(src)).addOutEdge(e);
         ((Node)nodes.get(dest)).addInEdge(e);
     }
@@ -46,7 +46,7 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return edges.iterator();
+        return edges.values().iterator();
     }
 
     @Override
@@ -73,7 +73,9 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
     @Override
     public EdgeData removeEdge(int src, int dest) {
-        return null;
+        ((Node)nodes.get(src)).getOutEdges().remove(dest);
+        ((Node)nodes.get(dest)).getInEdges().remove(src);
+        return edges.remove(src+""+dest);
     }
 
     @Override

@@ -1,5 +1,6 @@
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
+import api.EdgeData;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -79,8 +80,11 @@ public class Ex2 {
     public static void main(String[] args) {
         DirectedWeightedGraph dwg = getGrapg("data/G1.json");
         System.out.println(dwg);
-        dwg.removeNode(3);
+        dwg.removeNode(5);
         System.out.println(dwg);
+        System.out.println(((Node)dwg.getNode(2)).inDegree());
+        EdgeData e = dwg.removeEdge(1,2);
+        System.out.println(((Node)dwg.getNode(2)).inDegree());
 
     }
 }
