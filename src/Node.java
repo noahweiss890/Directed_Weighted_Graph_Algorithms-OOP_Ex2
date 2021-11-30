@@ -85,4 +85,12 @@ public class Node implements NodeData {
     public void addOutEdges(EdgeData e) {
         outEdges.add(e);
     }
+
+    public int inDegree() {
+        return inEdges.size();
+    }
+
+    public int outDegree() {
+        return outEdges.size();
+    }
 }
