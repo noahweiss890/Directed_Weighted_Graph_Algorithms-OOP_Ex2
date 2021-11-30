@@ -8,10 +8,12 @@ import java.util.Iterator;
 
 public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
-    private HashMap<Integer, Node> nodes;
+    private HashMap<Integer, NodeData> nodes;
+    private ArrayList<EdgeData> edges;
 
     public MyDirectedWeightedGraph() {
-        nodes = new HashMap<Integer, Node>();
+        nodes = new HashMap<Integer, NodeData>();
+        edges = new ArrayList<EdgeData>();
     }
 
     @Override
@@ -21,7 +23,7 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
     @Override
     public EdgeData getEdge(int src, int dest) {
-        return nodes.get(src).getOutEdges(dest);
+        return ((Node)nodes.get(src)).getOutEdge(dest);
     }
 
     @Override
@@ -32,29 +34,41 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
     @Override
     public void connect(int src, int dest, double w) {
         Edge e = new Edge(src, dest, w);
-        nodes.get(src).addOutEdges(e);
-        nodes.get(dest).addInEdges(e);
-
+        edges.add(e);
+        ((Node)nodes.get(src)).addOutEdge(e);
+        ((Node)nodes.get(dest)).addInEdge(e);
     }
 
     @Override
     public Iterator<NodeData> nodeIter() {
-        return null;
+        return nodes.values().iterator();
     }
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return null;
+        return edges.iterator();
     }
 
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        return null;
+        return ((Node)nodes.get(node_id)).getOutEdges().values().iterator();
     }
 
     @Override
     public NodeData removeNode(int key) {
-        return null;
+        Node gone = (Node)nodes.remove(key);
+        int node2del;
+        Iterator<EdgeData> outEdgeIter = gone.getOutEdges().values().iterator();
+        Iterator<EdgeData> inEdgeIter = gone.getInEdges().values().iterator();
+        while(outEdgeIter.hasNext()) {
+            EdgeData e = outEdgeIter.next();
+            ((Node)nodes.get(e.getDest())).getInEdges().remove(key);
+        }
+        while(inEdgeIter.hasNext()) {
+            EdgeData e = inEdgeIter.next();
+            ((Node)nodes.get(e.getSrc())).getOutEdges().remove(key);
+        }
+        return gone;
     }
 
     @Override
@@ -77,4 +91,10 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return "MyDirectedWeightedGraph{" +
+                "nodes=" + nodes +
+                '}';
+    }
 }

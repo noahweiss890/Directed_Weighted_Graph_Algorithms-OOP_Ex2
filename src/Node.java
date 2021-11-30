@@ -20,7 +20,7 @@ public class Node implements NodeData {
         this.location = new Point3D(Double.parseDouble(locArray[0]), Double.parseDouble(locArray[1]), Double.parseDouble(locArray[2]));
         this.key = id;
         this.weight = 0;
-        this.info = pos + ", id: " + id;
+        this.info = "";
         this.tag = 0;
         inEdges = new HashMap<Integer, EdgeData>();
         outEdges = new HashMap<Integer, EdgeData>();
@@ -71,22 +71,22 @@ public class Node implements NodeData {
         this.tag = t;
     }
 
-    public EdgeData getInEdges(int key) {
+    public EdgeData getInEdge(int key) {
 
         return inEdges.get(key);
     }
 
-    public void addInEdges(EdgeData e) {
+    public void addInEdge(EdgeData e) {
 
         inEdges.put(e.getSrc(), e);
     }
 
-    public EdgeData getOutEdges(int key) {
+    public EdgeData getOutEdge(int key) {
 
         return outEdges.get(key);
     }
 
-    public void addOutEdges(EdgeData e) {
+    public void addOutEdge(EdgeData e) {
 
         outEdges.put(e.getDest(), e);
     }
@@ -99,5 +99,26 @@ public class Node implements NodeData {
     public int outDegree() {
 
         return outEdges.size();
+    }
+
+    public HashMap<Integer, EdgeData> getInEdges() {
+        return inEdges;
+    }
+
+    public HashMap<Integer, EdgeData> getOutEdges() {
+        return outEdges;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "location=" + location +
+                ", key=" + key +
+                ", weight=" + weight +
+                ", info='" + info + '\'' +
+                ", tag=" + tag +
+                ", inEdges=" + inEdges +
+                ", outEdges=" + outEdges +
+                '}' + "\n";
     }
 }
