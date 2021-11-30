@@ -3,6 +3,7 @@ import api.GeoLocation;
 import api.NodeData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Node implements NodeData {
 
@@ -11,7 +12,7 @@ public class Node implements NodeData {
     private double weight;
     private String info;
     private int tag;
-    private ArrayList<EdgeData> inEdges, outEdges;
+    private HashMap<Integer, EdgeData> inEdges, outEdges;
 
 
     public Node(String pos, int id) {
@@ -21,8 +22,8 @@ public class Node implements NodeData {
         this.weight = 0;
         this.info = pos + ", id: " + id;
         this.tag = 0;
-        inEdges = new ArrayList<EdgeData>();
-        outEdges = new ArrayList<EdgeData>();
+        inEdges = new HashMap<Integer, EdgeData>();
+        outEdges = new HashMap<Integer, EdgeData>();
     }
 
     @Override
@@ -70,27 +71,33 @@ public class Node implements NodeData {
         this.tag = t;
     }
 
-    public EdgeData getInEdges(int i) {
-        return inEdges.get(i);
+    public EdgeData getInEdges(int key) {
+
+        return inEdges.get(key);
     }
 
     public void addInEdges(EdgeData e) {
-        inEdges.add(e);
+
+        inEdges.put(e.getSrc(), e);
     }
 
-    public EdgeData getOutEdges(int i) {
-        return outEdges.get(i);
+    public EdgeData getOutEdges(int key) {
+
+        return outEdges.get(key);
     }
 
     public void addOutEdges(EdgeData e) {
-        outEdges.add(e);
+
+        outEdges.put(e.getDest(), e);
     }
 
     public int inDegree() {
+
         return inEdges.size();
     }
 
     public int outDegree() {
+
         return outEdges.size();
     }
 }
