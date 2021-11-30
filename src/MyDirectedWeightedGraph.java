@@ -3,30 +3,37 @@ import api.EdgeData;
 import api.NodeData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
-    private ArrayList<NodeData> nodes;
+    private HashMap<Integer, Node> nodes;
 
+    public MyDirectedWeightedGraph() {
+        nodes = new HashMap<Integer, Node>();
+    }
 
     @Override
     public NodeData getNode(int key) {
-        return nodes.get(key);
+            return nodes.get(key);
     }
 
     @Override
     public EdgeData getEdge(int src, int dest) {
-        return null;
+        return nodes.get(src).getOutEdges(dest);
     }
 
     @Override
     public void addNode(NodeData n) {
-        nodes.add(n.getKey(), n);
+        nodes.put(n.getKey(), (Node) n);
     }
 
     @Override
     public void connect(int src, int dest, double w) {
+        Edge e = new Edge(src, dest, w);
+        nodes.get(src).addOutEdges(e);
+        nodes.get(dest).addInEdges(e);
 
     }
 
