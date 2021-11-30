@@ -14,19 +14,18 @@ public class DirectedWeightedGraphDeserializer implements JsonDeserializer<Direc
         JsonObject jsonObject = json.getAsJsonObject();
         MyDirectedWeightedGraph graph = new MyDirectedWeightedGraph();
 
-        JsonObject nodesJsonObj = jsonObject.get("Nodes").getAsJsonObject();
-        for(Map.Entry<String, JsonElement> n: nodesJsonObj.entrySet()) {
-            String pos = n.getValue().getAsJsonObject().get("pos").getAsString();
-            int id = n.getValue().getAsJsonObject().get("id").getAsInt();
-            Node node = new Node(pos, id);
-            graph.addNode(node);
+        JsonArray nodesJsonArray = jsonObject.get("Nodes").getAsJsonArray();
+        for(int i = 0; i < nodesJsonArray.size(); i++) {
+            String pos = nodesJsonArray.get(i).getAsJsonObject().get("pos").getAsString();
+            int id = nodesJsonArray.get(i).getAsJsonObject().get("id").getAsInt();
+            graph.addNode(new Node(pos, id));
         }
 
-        JsonObject edgesJsonObj = jsonObject.get("Edges").getAsJsonObject();
-        for(Map.Entry<String, JsonElement> e: edgesJsonObj.entrySet()) {
-            int src = e.getValue().getAsJsonObject().get("src").getAsInt();
-            double w = e.getValue().getAsJsonObject().get("w").getAsDouble();
-            int dest = e.getValue().getAsJsonObject().get("dest").getAsInt();
+        JsonArray edgesJsonArray = jsonObject.get("Edges").getAsJsonArray();
+        for(int i = 0; i < edgesJsonArray.size(); i++) {
+            int src = edgesJsonArray.get(i).getAsJsonObject().get("src").getAsInt();
+            double w = edgesJsonArray.get(i).getAsJsonObject().get("w").getAsDouble();
+            int dest = edgesJsonArray.get(i).getAsJsonObject().get("dest").getAsInt();
             graph.connect(src, dest, w);
         }
 

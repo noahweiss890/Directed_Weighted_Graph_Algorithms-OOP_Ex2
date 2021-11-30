@@ -50,4 +50,15 @@ public class Edge implements EdgeData {
     public void setTag(int t) {
         this.tag = t;
     }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "src=" + src +
+                ", dest=" + dest +
+                ", weight=" + weight +
+                ", info='" + info + '\'' +
+                ", tag=" + tag +
+                '}';
+    }
 }
