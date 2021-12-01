@@ -28,7 +28,7 @@ public class DirectedWeightedGraphDeserializer implements JsonDeserializer<Direc
             int dest = edgesJsonArray.get(i).getAsJsonObject().get("dest").getAsInt();
             graph.connect(src, dest, w);
         }
-
+        graph.setMC(0);
         return graph;
     }
 }
