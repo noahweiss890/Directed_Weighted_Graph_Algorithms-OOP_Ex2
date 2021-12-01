@@ -10,10 +10,12 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
     private HashMap<Integer, NodeData> nodes;
     private HashMap<String, EdgeData> edges;
+    private int mc;
 
     public MyDirectedWeightedGraph() {
         nodes = new HashMap<Integer, NodeData>();
         edges = new HashMap<String, EdgeData>();
+        mc = 0;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
     @Override
     public void addNode(NodeData n) {
         nodes.put(n.getKey(), (Node) n);
+        mc++;
     }
 
     @Override
@@ -57,7 +60,6 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
     @Override
     public NodeData removeNode(int key) {
         Node gone = (Node)nodes.remove(key);
-        int node2del;
         Iterator<EdgeData> outEdgeIter = gone.getOutEdges().values().iterator();
         Iterator<EdgeData> inEdgeIter = gone.getInEdges().values().iterator();
         while(outEdgeIter.hasNext()) {
@@ -68,6 +70,7 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
             EdgeData e = inEdgeIter.next();
             ((Node)nodes.get(e.getSrc())).getOutEdges().remove(key);
         }
+        mc++;
         return gone;
     }
 
@@ -75,22 +78,27 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
     public EdgeData removeEdge(int src, int dest) {
         ((Node)nodes.get(src)).getOutEdges().remove(dest);
         ((Node)nodes.get(dest)).getInEdges().remove(src);
+        mc++;
         return edges.remove(src+""+dest);
     }
 
     @Override
     public int nodeSize() {
-        return 0;
+        return nodes.size();
     }
 
     @Override
     public int edgeSize() {
-        return 0;
+        return edges.size();
     }
 
     @Override
     public int getMC() {
-        return 0;
+        return mc;
+    }
+
+    public void setMC(int newMC){
+        this.mc = newMC;
     }
 
     @Override
