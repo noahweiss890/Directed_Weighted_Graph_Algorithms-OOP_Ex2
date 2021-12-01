@@ -4,6 +4,7 @@ import api.NodeData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Node implements NodeData {
 
@@ -24,6 +25,13 @@ public class Node implements NodeData {
         this.tag = 0;
         inEdges = new HashMap<Integer, EdgeData>();
         outEdges = new HashMap<Integer, EdgeData>();
+    }
+
+    public NodeData copy() {
+        NodeData temp = new Node(this.location.x() + "," + this.location.y() + "," + this.location.z(), this.key);
+        ((Node)temp).inEdges = (HashMap<Integer, EdgeData>) this.inEdges.clone();
+        ((Node)temp).outEdges = (HashMap<Integer, EdgeData>) this.outEdges.clone();
+        return temp;
     }
 
     @Override
