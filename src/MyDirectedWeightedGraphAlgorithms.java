@@ -6,20 +6,21 @@ import java.util.List;
 
 public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphAlgorithms {
 
+    private DirectedWeightedGraph graph;
 
     @Override
     public void init(DirectedWeightedGraph g) {
-
+        graph = g;
     }
 
     @Override
     public DirectedWeightedGraph getGraph() {
-        return null;
+        return graph;
     }
 
     @Override
     public DirectedWeightedGraph copy() {
-        return null;
+        return ((MyDirectedWeightedGraph)graph).copy();
     }
 
     @Override
