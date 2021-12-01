@@ -18,6 +18,20 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
         mc = 0;
     }
 
+    public DirectedWeightedGraph copy() {
+        DirectedWeightedGraph temp = new MyDirectedWeightedGraph();
+        Iterator<NodeData> nIter = this.nodeIter();
+        Iterator<EdgeData> eIter = this.edgeIter();
+        while(nIter.hasNext()) {
+            temp.addNode(((Node)nIter.next()).copy());
+        }
+        while(eIter.hasNext()) {
+            EdgeData e = (Edge)eIter.next();
+            temp.connect(e.getSrc(), e.getDest(), e.getWeight());
+        }
+        return temp;
+    }
+
     @Override
     public NodeData getNode(int key) {
             return nodes.get(key);
