@@ -28,9 +28,9 @@ public class Node implements NodeData {
     }
 
     public NodeData copy() {
-        NodeData temp = new Node(this.location.x() + "," + this.location.y() + "," + this.location.z(), this.key);
-        ((Node)temp).inEdges = (HashMap<Integer, EdgeData>) this.inEdges.clone();
-        ((Node)temp).outEdges = (HashMap<Integer, EdgeData>) this.outEdges.clone();
+        Node temp = new Node(this.location.x() + "," + this.location.y() + "," + this.location.z(), this.key);
+        temp.inEdges = (HashMap<Integer, EdgeData>) this.inEdges.clone();
+        temp.outEdges = (HashMap<Integer, EdgeData>) this.outEdges.clone();
         return temp;
     }
 
