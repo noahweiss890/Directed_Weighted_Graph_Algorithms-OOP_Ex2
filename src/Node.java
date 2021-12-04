@@ -14,6 +14,7 @@ public class Node implements NodeData {
     private String info;
     private int tag;
     private HashMap<Integer, EdgeData> inEdges, outEdges;
+    private Node prev;
 
 
     public Node(String pos, int id) {
@@ -25,7 +26,9 @@ public class Node implements NodeData {
         this.tag = 0;
         inEdges = new HashMap<Integer, EdgeData>();
         outEdges = new HashMap<Integer, EdgeData>();
+        prev = null;
     }
+
 
     public NodeData copy() {
         Node temp = new Node(this.location.x() + "," + this.location.y() + "," + this.location.z(), this.key);
@@ -79,6 +82,14 @@ public class Node implements NodeData {
         this.tag = t;
     }
 
+    public Node getPrev(){
+        return this.prev;
+    }
+
+    public void setPrev(Node n){
+        this.prev = n;
+    }
+
     public EdgeData getInEdge(int key) {
 
         return inEdges.get(key);
@@ -117,6 +128,9 @@ public class Node implements NodeData {
         return outEdges;
     }
 
+
+
+
     @Override
     public String toString() {
         return "Node{" +
@@ -127,6 +141,8 @@ public class Node implements NodeData {
                 ", tag=" + tag +
                 ", inEdges=" + inEdges +
                 ", outEdges=" + outEdges +
+                ", prev node=" + prev +
                 '}' + "\n";
     }
 }
+
