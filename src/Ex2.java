@@ -79,12 +79,16 @@ public class Ex2 {
 
     public static void main(String[] args) {
         DirectedWeightedGraph dwg = getGrapg("data/G1.json");
-        System.out.println(dwg);
-        dwg.removeNode(5);
-        System.out.println(dwg);
-        System.out.println(((Node)dwg.getNode(2)).inDegree());
-        EdgeData e = dwg.removeEdge(1,2);
-        System.out.println(((Node)dwg.getNode(2)).inDegree());
+        DirectedWeightedGraphAlgorithms whatever = new MyDirectedWeightedGraphAlgorithms();
+        whatever.init(dwg);
+        System.out.println(whatever.shortestPathDist(14,0));
+        System.out.println(whatever.shortestPath(14,0));
+//        System.out.println(dwg);
+//        dwg.removeNode(5);
+//        System.out.println(dwg);
+//        System.out.println(((Node)dwg.getNode(2)).inDegree());
+//        EdgeData e = dwg.removeEdge(1,2);
+//        System.out.println(((Node)dwg.getNode(2)).inDegree());
 
     }
 }
