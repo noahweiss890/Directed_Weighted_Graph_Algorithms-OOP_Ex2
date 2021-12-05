@@ -55,6 +55,7 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
         edges.put(src+""+dest, e);
         ((Node)nodes.get(src)).addOutEdge(e);
         ((Node)nodes.get(dest)).addInEdge(e);
+        mc++;
     }
 
     @Override
