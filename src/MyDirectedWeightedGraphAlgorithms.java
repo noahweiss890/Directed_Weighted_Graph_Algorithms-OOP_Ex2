@@ -37,7 +37,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     @Override
     public double shortestPathDist(int src, int dest) {
         PriorityQueue<Node> minWeight = new PriorityQueue<Node>(graph.nodeSize(), new NodeComparator());
-        //PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), Comparator.comparingDouble(NodeData::getWeight));
         Node srcNode = (Node) graph.getNode(src);
         srcNode.setWeight(0);
         minWeight.add(srcNode);
@@ -58,16 +57,15 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 EdgeData neighborEdge = eIterator.next();
                 int neighborKey = neighborEdge.getDest();
                 Node neighbor = (Node) graph.getNode(neighborKey);
-//                if(neighbor.getWeight() == -1) {
-//                    neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
-//                    neighbor.setPrev(curr);
-//                }
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
                     neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
                     neighbor.setPrev(curr);
                     minWeight.offer(neighbor);
                 }
             }
+        }
+        if(graph.getNode(dest).getWeight() == Double.MAX_VALUE){
+            return -1;
         }
         return graph.getNode(dest).getWeight();
     }
@@ -75,7 +73,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
         PriorityQueue<Node> minWeight = new PriorityQueue<Node>(graph.nodeSize(), new NodeComparator());
-        //PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), Comparator.comparingDouble(NodeData::getWeight));
         Node srcNode = (Node) graph.getNode(src);
         srcNode.setWeight(0);
         minWeight.add(srcNode);
@@ -96,16 +93,15 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 EdgeData neighborEdge = eIterator.next();
                 int neighborKey = neighborEdge.getDest();
                 Node neighbor = (Node) graph.getNode(neighborKey);
-//                if(neighbor.getWeight() == -1) {
-//                    neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
-//                    neighbor.setPrev(curr);
-//                }
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
                     neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
                     neighbor.setPrev(curr);
                     minWeight.offer(neighbor);
                 }
             }
+        }
+        if(graph.getNode(dest).getWeight() == Double.MAX_VALUE){
+            return null;
         }
         ArrayList<NodeData> path = new ArrayList<NodeData>();
         Node curNode = (Node) graph.getNode(dest);
