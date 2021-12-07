@@ -1,6 +1,7 @@
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,13 +9,13 @@ import java.util.Iterator;
 
 public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
-    private HashMap<Integer, NodeData> nodes;
     private HashMap<String, EdgeData> edges;
+    private HashMap<Integer, NodeData> nodes;
     private int mc;
 
     public MyDirectedWeightedGraph() {
-        nodes = new HashMap<Integer, NodeData>();
         edges = new HashMap<String, EdgeData>();
+        nodes = new HashMap<Integer, NodeData>();
         mc = 0;
     }
 
@@ -115,6 +116,10 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
 
     public void setMC(int newMC){
         this.mc = newMC;
+    }
+
+    public ArrayList<EdgeData> getEdgesArray() {
+        return new ArrayList<>(edges.values());
     }
 
     @Override

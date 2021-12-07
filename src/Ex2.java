@@ -58,7 +58,10 @@ public class Ex2 {
         DirectedWeightedGraphAlgorithms ans = null;
         // ****** Add your code here ******
 
-
+        ans = new MyDirectedWeightedGraphAlgorithms();
+        if(!ans.load(json_file)) {
+            System.out.println("the graph was not loaded successfully");
+        }
 
         // ********************************
         return ans;
@@ -78,11 +81,11 @@ public class Ex2 {
     }
 
     public static void main(String[] args) {
-        DirectedWeightedGraph dwg = getGrapg("data/G1.json");
-        DirectedWeightedGraph dwg2 = getGrapg("data/G2.json");
-        DirectedWeightedGraphAlgorithms dawg2 = new MyDirectedWeightedGraphAlgorithms();
-        dawg2.init(dwg);
-        System.out.println(dawg2.isConnected());
+//        DirectedWeightedGraph dwg = getGrapg("data/G1.json");
+//        DirectedWeightedGraph dwg2 = getGrapg("data/G2.json");
+//        DirectedWeightedGraphAlgorithms dawg2 = new MyDirectedWeightedGraphAlgorithms();
+//        dawg2.init(dwg);
+//        System.out.println(dawg2.isConnected());
 //        DirectedWeightedGraphAlgorithms whatever = new MyDirectedWeightedGraphAlgorithms();
 //        whatever.init(dwg);
         //System.out.println(whatever.isConnected());
@@ -94,6 +97,17 @@ public class Ex2 {
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
 //        EdgeData e = dwg.removeEdge(1,2);
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
+
+        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/G1.json");
+//        System.out.println(dwga + "\n");
+//        dwga.load("data/G2.json");
+//        System.out.println(dwga + "\n");
+        dwga.save("src/testing.json");
+
+        dwga.load("data/G2.json");
+
+        dwga.save("src/testing.json");
+
 
     }
 }

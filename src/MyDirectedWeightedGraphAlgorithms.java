@@ -2,8 +2,14 @@ import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
+import com.google.gson.*;
 import org.w3c.dom.traversal.NodeIterator;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.ToDoubleFunction;
 
@@ -42,7 +48,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 DFS_visit(g, v);
             }
         }
-        u.setTag(2);//color is black
+        u.setTag(2);  //color is black
     }
 
     //receives a graph and returns the transpose of that graph
@@ -174,16 +180,69 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        return null;
+        double distances[][] = new double[cities.size()][cities.size()];
+        for (int i = 0; i < cities.size(); i++) {
+            for (int j = 0; j < cities.size(); j++) {
+                distances[i][j] = shortestPathDist(i,j);
+            }
+        }
+        ArrayList<NodeData> myCities = new ArrayList<NodeData>(cities);
+        double minWeight = Double.MAX_VALUE;
+        ArrayList<NodeData> path = new ArrayList<NodeData>();
+        for (int i = 0; i < myCities.size(); i++) {  // who is the starting city?
+            System.out.println("NOT DONE!");
+        }
+        tspHelper(path, distances, myCities, cities.get(0), 0);
+        return path;
+    }
+
+    private int tspHelper(ArrayList<NodeData> path, double[][] distances, List<NodeData> cities, NodeData curr, int weight) {
+        if(!path.containsAll(cities)) {
+            for (NodeData n: cities) {
+                System.out.println("NOT DONE!");
+            }
+        }
+        return weight;
     }
 
     @Override
     public boolean save(String file) {
-        return false;
+        try {
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(MyDirectedWeightedGraph.class, new DirectedWeightedGraphSerializer());
+            builder.setPrettyPrinting();
+            Gson gson = builder.create();
+            String json = gson.toJson(this.graph);
+            FileWriter fw = new FileWriter(file);
+            fw.write(json);
+            fw.close();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean load(String file) {
-        return false;
+        DirectedWeightedGraph newGraph;
+        try {
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(MyDirectedWeightedGraph.class, new DirectedWeightedGraphDeserializer());
+            Gson gson = builder.create();
+            FileReader reader = new FileReader(file);
+            newGraph = gson.fromJson(reader, MyDirectedWeightedGraph.class);
+            this.init(newGraph);
+        }
+        catch (FileNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "MyDirectedWeightedGraphAlgorithms{" +
+                "graph=" + graph +
+                '}';
     }
 }
