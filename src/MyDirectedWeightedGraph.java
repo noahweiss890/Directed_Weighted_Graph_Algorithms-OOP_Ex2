@@ -122,10 +122,10 @@ public class MyDirectedWeightedGraph implements DirectedWeightedGraph {
         return new ArrayList<>(edges.values());
     }
 
-    @Override
-    public String toString() {
-        return "MyDirectedWeightedGraph{" +
-                "nodes=" + nodes +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "MyDirectedWeightedGraph{" +
+//                "nodes=" + nodes +
+//                '}';
+//    }
 }

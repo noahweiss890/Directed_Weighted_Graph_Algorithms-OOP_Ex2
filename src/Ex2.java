@@ -1,6 +1,7 @@
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
+import api.NodeData;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -98,15 +100,21 @@ public class Ex2 {
 //        EdgeData e = dwg.removeEdge(1,2);
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
 
-        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/G1.json");
+        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/bla.json");
 //        System.out.println(dwga + "\n");
 //        dwga.load("data/G2.json");
 //        System.out.println(dwga + "\n");
-        dwga.save("src/testing.json");
+//        dwga.save("src/testing.json");
+//        dwga.load("data/G2.json");
+//        dwga.save("src/testing.json");
 
-        dwga.load("data/G2.json");
+        List<NodeData> somPath = new ArrayList<>();
+        somPath.add(dwga.getGraph().getNode(1));
+        somPath.add(dwga.getGraph().getNode(2));
+        somPath.add(dwga.getGraph().getNode(3));
+        somPath.add(dwga.getGraph().getNode(4));
 
-        dwga.save("src/testing.json");
+        dwga.tsp(somPath);
 
 
     }

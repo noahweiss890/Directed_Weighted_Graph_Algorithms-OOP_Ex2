@@ -180,29 +180,56 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        double distances[][] = new double[cities.size()][cities.size()];
+        HashMap<Integer, NodeData> myCities = new HashMap<Integer, NodeData>();
         for (int i = 0; i < cities.size(); i++) {
-            for (int j = 0; j < cities.size(); j++) {
-                distances[i][j] = shortestPathDist(i,j);
+            myCities.put(cities.get(i).getKey(), cities.get(i));
+        }
+        HashMap<String, Double> distances = new HashMap<String, Double>();
+        for (int i: myCities.keySet()) {
+            for (int j: myCities.keySet()) {
+                distances.put(myCities.get(i).getKey() + "->" + myCities.get(j).getKey(), shortestPathDist(myCities.get(i).getKey(), myCities.get(j).getKey()));
             }
         }
-        ArrayList<NodeData> myCities = new ArrayList<NodeData>(cities);
-        double minWeight = Double.MAX_VALUE;
-        ArrayList<NodeData> path = new ArrayList<NodeData>();
-        for (int i = 0; i < myCities.size(); i++) {  // who is the starting city?
-            System.out.println("NOT DONE!");
+        double minWeight = Double.MAX_VALUE, weight;
+        ArrayList<NodeData> minPath = new ArrayList<NodeData>();
+        for (Map.Entry<Integer, NodeData> n: myCities.entrySet()) {  // who is the starting city?
+            HashMap<Integer, NodeData> temp = (HashMap<Integer, NodeData>)myCities.clone();
+            temp.remove(n.getKey());
+            ArrayList<NodeData> tempPath = new ArrayList<NodeData>();
+            tempPath.add(n.getValue());
+            weight = tspHelper(tempPath, distances, temp, n.getKey(), n.getKey());
+            if(weight < minWeight) {
+                minWeight = weight;
+                minPath = tempPath;
+            }
         }
-        tspHelper(path, distances, myCities, cities.get(0), 0);
+        System.out.println("DONE!");
+        System.out.println("the tsp weight is: " + minWeight);
+        ArrayList<NodeData> path = new ArrayList<NodeData>();
+        for (int i = 0; i < minPath.size()-1; i++) {
+            System.out.println("i: " + i);
+            path.addAll(shortestPath(minPath.get(i).getKey(), minPath.get(i+1).getKey()));
+        }
         return path;
     }
 
-    private int tspHelper(ArrayList<NodeData> path, double[][] distances, List<NodeData> cities, NodeData curr, int weight) {
-        if(!path.containsAll(cities)) {
-            for (NodeData n: cities) {
-                System.out.println("NOT DONE!");
+    private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int start, int curr) {
+        if(cities.size() == 0) {
+            return distances.get(curr + "->" + start);
+        }
+        double minWeight = Double.MAX_VALUE, weight;
+        NodeData ans = null;
+        for(Map.Entry<Integer, NodeData> n: cities.entrySet()) {
+            HashMap<Integer, NodeData> temp = (HashMap<Integer, NodeData>)cities.clone();
+            temp.remove(n.getKey());
+            weight = distances.get(curr + "->" + n.getKey()) + tspHelper(path, distances, temp, start, n.getKey());
+            if(weight < minWeight) {
+                minWeight = weight;
+                ans = n.getValue();
             }
         }
-        return weight;
+        path.add(1, ans);
+        return minWeight;
     }
 
     @Override
@@ -239,10 +266,10 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "MyDirectedWeightedGraphAlgorithms{" +
-                "graph=" + graph +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "MyDirectedWeightedGraphAlgorithms{" +
+//                "graph=" + graph +
+//                '}';
+//    }
 }
