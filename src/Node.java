@@ -1,10 +1,9 @@
 import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
+import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Node implements NodeData {
 
@@ -15,6 +14,7 @@ public class Node implements NodeData {
     private int tag;
     private HashMap<Integer, EdgeData> inEdges, outEdges;
     private Node prev;
+
 
 
     public Node(String pos, int id) {
@@ -91,32 +91,26 @@ public class Node implements NodeData {
     }
 
     public EdgeData getInEdge(int key) {
-
         return inEdges.get(key);
     }
 
     public void addInEdge(EdgeData e) {
-
         inEdges.put(e.getSrc(), e);
     }
 
     public EdgeData getOutEdge(int key) {
-
         return outEdges.get(key);
     }
 
     public void addOutEdge(EdgeData e) {
-
         outEdges.put(e.getDest(), e);
     }
 
     public int inDegree() {
-
         return inEdges.size();
     }
 
     public int outDegree() {
-
         return outEdges.size();
     }
 
@@ -128,21 +122,17 @@ public class Node implements NodeData {
         return outEdges;
     }
 
-
-
-
-    @Override
-    public String toString() {
-        return "Node{" +
-                "location=" + location +
-                ", key=" + key +
-                ", weight=" + weight +
-                ", info='" + info + '\'' +
-                ", tag=" + tag +
-                ", inEdges=" + inEdges +
-                ", outEdges=" + outEdges +
-                ", prev node=" + prev +
-                '}' + "\n";
-    }
+//    @Override
+//    public String toString() {
+//        return "Node{" +
+//                "location=" + location +
+//                ", key=" + key +
+//                ", weight=" + weight +
+//                ", info='" + info + '\'' +
+//                ", tag=" + tag +
+//                ", inEdges=" + inEdges +
+//                ", outEdges=" + outEdges +
+//                ", prev node=" + prev +
+//                '}' + "\n";
+//    }
 }
-

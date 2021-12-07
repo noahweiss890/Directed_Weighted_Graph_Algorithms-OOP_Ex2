@@ -1,17 +1,18 @@
 import api.EdgeData;
+import com.google.gson.annotations.Expose;
 
 public class Edge implements EdgeData {
 
     private int src;
+    private double w;
     private int dest;
-    private double weight;
     private String info;
     private int tag;
 
     public Edge(int src, int dest, double weight){
         this.src = src;
+        this.w = weight;
         this.dest = dest;
-        this.weight = weight;
         info = "";
         tag = 0; // 0 = white for now, 1 is grey, 2 is black
     }
@@ -28,7 +29,7 @@ public class Edge implements EdgeData {
 
     @Override
     public double getWeight() {
-        return weight;
+        return w;
     }
 
     @Override
@@ -51,14 +52,14 @@ public class Edge implements EdgeData {
         this.tag = t;
     }
 
-    @Override
-    public String toString() {
-        return "Edge{" +
-                "src=" + src +
-                ", dest=" + dest +
-                ", weight=" + weight +
-                ", info='" + info + '\'' +
-                ", tag=" + tag +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Edge{" +
+//                "src=" + src +
+//                ", dest=" + dest +
+//                ", weight=" + w +
+//                ", info='" + info + '\'' +
+//                ", tag=" + tag +
+//                '}';
+//    }
 }

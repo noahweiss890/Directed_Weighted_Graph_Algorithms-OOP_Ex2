@@ -1,6 +1,7 @@
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
+import api.NodeData;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,10 @@ public class Ex2 {
         DirectedWeightedGraphAlgorithms ans = null;
         // ****** Add your code here ******
 
-
+        ans = new MyDirectedWeightedGraphAlgorithms();
+        if(!ans.load(json_file)) {
+            System.out.println("the graph was not loaded successfully");
+        }
 
         // ********************************
         return ans;
@@ -78,11 +83,11 @@ public class Ex2 {
     }
 
     public static void main(String[] args) {
-        DirectedWeightedGraph dwg = getGrapg("data/G1.json");
-        DirectedWeightedGraph dwg2 = getGrapg("data/G2.json");
-        DirectedWeightedGraphAlgorithms dawg2 = new MyDirectedWeightedGraphAlgorithms();
-        dawg2.init(dwg);
-        System.out.println(dawg2.isConnected());
+//        DirectedWeightedGraph dwg = getGrapg("data/G1.json");
+//        DirectedWeightedGraph dwg2 = getGrapg("data/G2.json");
+//        DirectedWeightedGraphAlgorithms dawg2 = new MyDirectedWeightedGraphAlgorithms();
+//        dawg2.init(dwg);
+//        System.out.println(dawg2.isConnected());
 //        DirectedWeightedGraphAlgorithms whatever = new MyDirectedWeightedGraphAlgorithms();
 //        whatever.init(dwg);
         //System.out.println(whatever.isConnected());
@@ -94,6 +99,23 @@ public class Ex2 {
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
 //        EdgeData e = dwg.removeEdge(1,2);
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
+
+        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/bla.json");
+//        System.out.println(dwga + "\n");
+//        dwga.load("data/G2.json");
+//        System.out.println(dwga + "\n");
+//        dwga.save("src/testing.json");
+//        dwga.load("data/G2.json");
+//        dwga.save("src/testing.json");
+
+        List<NodeData> somPath = new ArrayList<>();
+        somPath.add(dwga.getGraph().getNode(1));
+        somPath.add(dwga.getGraph().getNode(2));
+        somPath.add(dwga.getGraph().getNode(3));
+        somPath.add(dwga.getGraph().getNode(4));
+
+        dwga.tsp(somPath);
+
 
     }
 }
