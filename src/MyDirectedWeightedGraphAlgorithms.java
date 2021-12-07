@@ -88,32 +88,36 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         }
 
     @Override
+    //O(n^2logn)
     public double shortestPathDist(int src, int dest) {
+        if(src == dest){
+            return 0;
+        }
         PriorityQueue<Node> minWeight = new PriorityQueue<Node>(graph.nodeSize(), new NodeComparator());
         Node srcNode = (Node) graph.getNode(src);
-        srcNode.setWeight(0);
-        minWeight.add(srcNode);
-        Iterator<NodeData> nIterator = graph.nodeIter();
-        while (nIterator.hasNext()) {
+        srcNode.setWeight(0); //  O(1)
+        minWeight.offer(srcNode); //O(logn)
+        Iterator<NodeData> nIterator = graph.nodeIter(); //O(1)
+        while (nIterator.hasNext()) { //O(n)
             Node n = (Node) nIterator.next();
             if (n.getKey() != srcNode.getKey()) {
-                n.setWeight(Double.MAX_VALUE);
-                n.setPrev(null);
-                minWeight.offer(n);
+                n.setWeight(Double.MAX_VALUE); //O(1)
+                n.setPrev(null); //O(1)
+                minWeight.offer(n); //O(logn)
             }
         }
 
-        while (!minWeight.isEmpty()) {
-            Node curr = minWeight.poll();
+        while (!minWeight.isEmpty()) { //O(n)
+            Node curr = minWeight.poll(); //O(logn)
             Iterator<EdgeData> eIterator = graph.edgeIter(curr.getKey());
-            while (eIterator.hasNext()) {
+            while (eIterator.hasNext()) { //O(n)
                 EdgeData neighborEdge = eIterator.next();
                 int neighborKey = neighborEdge.getDest();
                 Node neighbor = (Node) graph.getNode(neighborKey);
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
                     neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
                     neighbor.setPrev(curr);
-                    minWeight.offer(neighbor);
+                    minWeight.offer(neighbor); //O(logn)
                 }
             }
         }
@@ -125,10 +129,13 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
+        if(src == dest){
+            return null;
+        }
         PriorityQueue<Node> minWeight = new PriorityQueue<Node>(graph.nodeSize(), new NodeComparator());
         Node srcNode = (Node) graph.getNode(src);
         srcNode.setWeight(0);
-        minWeight.add(srcNode);
+        minWeight.offer(srcNode);
         Iterator<NodeData> nIterator = graph.nodeIter();
         while (nIterator.hasNext()) {
             Node n = (Node) nIterator.next();
@@ -168,8 +175,41 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
 
     @Override
+    //O(n^4logn)
     public NodeData center() {
-        return null;
+        DirectedWeightedGraph copied_graph = this.copy();
+        if(isConnected() == false) {
+            return null;
+        }
+        //ArrayList<Double> eccentricity_list = new ArrayList<Double>();
+        HashMap<Integer, Double> eccentricity_map = new HashMap<>();
+        //Iterator<NodeData> nodeIt = this.graph.nodeIter();
+        Iterator<NodeData> nodeIt = copied_graph.nodeIter();
+        while(nodeIt.hasNext()){ //O(n)
+            Node n = (Node) nodeIt.next();
+            int key_n = n.getKey();
+            Node graph_n = (Node) this.getGraph().getNode(key_n);
+            double ecc = 0;
+            //Iterator<NodeData> nodeIt2 = this.graph.nodeIter();
+            Iterator<NodeData> nodeIt2 = copied_graph.nodeIter();
+            while(nodeIt2.hasNext()){
+                Node u = (Node) nodeIt2.next();
+                int key_u = u.getKey();
+                Node graph_u = (Node) this.getGraph().getNode(key_u);
+                double shortest_dist = shortestPathDist(graph_n.getKey(),graph_u.getKey()); //O(n^2logn)
+                if(shortest_dist > ecc){
+                    ecc = shortest_dist;
+                }
+            }
+            eccentricity_map.put(n.getKey(), ecc); //O(1)
+        }
+        Map.Entry<Integer, Double> min = null;
+        for (Map.Entry<Integer, Double> entry : eccentricity_map.entrySet()) { //O(n)
+            if (min == null || min.getValue() > entry.getValue()) {
+                min = entry;
+            }
+        }
+        return copied_graph.getNode(min.getKey());
     }
 
     @Override
