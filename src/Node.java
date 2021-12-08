@@ -125,15 +125,16 @@ public class Node implements NodeData {
     @Override
     public String toString() {
 
-        return "Node{" +
-                "location=" + location +
-                ", key=" + key +
-                ", weight=" + weight +
-                ", info='" + info + '\'' +
-                ", tag=" + tag +
-                ", inEdges=" + inEdges +
-                ", outEdges=" + outEdges +
-                ", prev node=" + prev +
-                '}' + "\n";
+        return "Node(id: " + key + ")";
+//        return "Node{" +
+//                "location=" + location +
+//                ", key=" + key +
+//                ", weight=" + weight +
+//                ", info='" + info + '\'' +
+//                ", tag=" + tag +
+//                ", inEdges=" + inEdges +
+//                ", outEdges=" + outEdges +
+//                ", prev node=" + prev +
+//                '}' + "\n";
     }
 }
