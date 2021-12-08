@@ -3,15 +3,12 @@ import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
 import com.google.gson.*;
-import org.w3c.dom.traversal.NodeIterator;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
-import java.util.function.ToDoubleFunction;
 
 public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphAlgorithms {
 
@@ -36,7 +33,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return ((MyDirectedWeightedGraph) graph).copy();
     }
 
-
     private void DFS_visit(DirectedWeightedGraph g, NodeData u) {
         Stack<NodeData> DFS_stack = new Stack<>();
         DFS_stack.push(u);
@@ -54,16 +50,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                     DFS_stack.push(v);
                     v.setTag(1); //now grey
                 }
-//        Iterator<EdgeData> eIterator = g.edgeIter(u.getKey());
-//        while(eIterator.hasNext()){
-//            EdgeData vEdge = eIterator.next();
-//            int vKey = vEdge.getDest();
-//            Node v = (Node) g.getNode(vKey);
-//            if(v.getTag() == 0){
-//                DFS_visit(g, v);
-//            }
-//        }
-//        u.setTag(2);  //color is black
             }
         }
     }
@@ -111,7 +97,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     @Override
-    //O(ElogV)
+    //O(E*logV)
     public double shortestPathDist(int src, int dest) {
         if (src == dest) {
             return 0;
@@ -129,7 +115,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 minWeight.offer(n); //O(logV)
             }
         }
-        //O(V+E) * O(logV) = O(ElogV)
+        //O(V+E) * O(logV) = O(E*logV)
         while (!minWeight.isEmpty()) {
             if (minWeight.peek().getWeight() == Double.MAX_VALUE) {
                 return -1;
@@ -175,7 +161,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 minWeight.offer(n);
             }
         }
-
         while (!minWeight.isEmpty()) {
             if (minWeight.peek().getWeight() == Double.MAX_VALUE) {
                 return null;
@@ -206,7 +191,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return path;
     }
 
-
     @Override
     //O()
     public NodeData center() {
@@ -214,22 +198,19 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         if (!isConnected()) {
             return null;
         }
-        //ArrayList<Double> eccentricity_list = new ArrayList<Double>();
         HashMap<Integer, Double> eccentricity_map = new HashMap<>();
-        //Iterator<NodeData> nodeIt = this.graph.nodeIter();
         Iterator<NodeData> nodeIt = copied_graph.nodeIter();
         while (nodeIt.hasNext()) { //O(n)
             Node n = (Node) nodeIt.next();
             int key_n = n.getKey();
             Node graph_n = (Node) this.getGraph().getNode(key_n);
             double ecc = 0;
-            //Iterator<NodeData> nodeIt2 = this.graph.nodeIter();
             Iterator<NodeData> nodeIt2 = copied_graph.nodeIter();
             while (nodeIt2.hasNext()) {
                 Node u = (Node) nodeIt2.next();
                 int key_u = u.getKey();
                 Node graph_u = (Node) this.getGraph().getNode(key_u);
-                double shortest_dist = shortestPathDist(graph_n.getKey(), graph_u.getKey()); //O(ElogV)
+                double shortest_dist = shortestPathDist(graph_n.getKey(), graph_u.getKey()); //O(E*logV)
                 if (shortest_dist > ecc) {
                     ecc = shortest_dist;
                 }
@@ -247,94 +228,19 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        ArrayList<NodeData> path = new ArrayList<>();
+        ArrayList<NodeData> myPath = new ArrayList<>();
         ArrayList<NodeData> myCities = new ArrayList<>(cities);
         NodeData curr = myCities.get(0);
         do {
-            path.add(curr);
+            myPath.add(curr);
             myCities.remove(curr);
             curr = closestNodeFinder(curr, myCities);
         }
         while(myCities.size() > 1);
-        path.add(myCities.get(0));
-        return path;
-    }
-
-
-
-
-//    @Override
-//    public List<NodeData> tsp(List<NodeData> cities) {
-//        ArrayList<NodeData> myCities = new ArrayList<>(cities);
-//        ArrayList<NodeData> path = new ArrayList<>();
-//        EdgeData minEdge = null;
-//        double minWeight = Double.MAX_VALUE;
-//        Iterator<EdgeData> eIter = graph.edgeIter();
-//        while (eIter.hasNext()) {
-//            EdgeData e = eIter.next();
-//            if (e.getWeight() < minWeight) {
-//                minWeight = e.getWeight();
-//                minEdge = e;
-//            }
-//        }
-//        path.add(graph.getNode(minEdge.getSrc()));
-//        path.add(graph.getNode(minEdge.getDest()));
-//        myCities.remove(graph.getNode(minEdge.getSrc()));
-//        myCities.remove(graph.getNode(minEdge.getDest()));
-//        while(!myCities.isEmpty()) {
-//            NodeData closest = findClosestNodeToPath(path, myCities);
-//        }
-//
-//        return null;
-//    }
-
-//    private NodeData findClosestNodeToPath(ArrayList<NodeData> path, ArrayList<NodeData> myCities) {
-//        double minWeight = Double.MAX_VALUE;
-//        NodeData ans = null;
-//        return null;
-//    }
-
-//    @Override
-    public List<NodeData> tspBAD(List<NodeData> cities) {
-        HashMap<Integer, NodeData> myCities = new HashMap<Integer, NodeData>();
-        for (NodeData city : cities) {
-            myCities.put(city.getKey(), city);
-        }
-        HashMap<String, Double> distances = new HashMap<String, Double>();
-        for (int i : myCities.keySet()) {
-            for (int j : myCities.keySet()) {
-                if (i != j) {
-                    distances.put(myCities.get(i).getKey() + "->" + myCities.get(j).getKey(), shortestPathDist(myCities.get(i).getKey(), myCities.get(j).getKey()));
-                }
-            }
-        }
-        System.out.println("DISTANCES: " + distances);
-        double minWeight = Double.MAX_VALUE, weight;
-        ArrayList<NodeData> minPath = new ArrayList<NodeData>();
-        NodeData ans = null;
-        NodeData closestToCenter = closestToCenter(center(), cities);
-//        NodeData closestToCenter = cities.get(0);
-//        System.out.println(closestToCenter);
-//        for (Map.Entry<Integer, NodeData> n: myCities.entrySet()) {  // who is the starting city?
-        HashMap<Integer, NodeData> temp = new HashMap<Integer, NodeData>(myCities);
-//            temp.remove(n.getKey());
-        temp.remove(closestToCenter.getKey());
-        ArrayList<NodeData> tempPath = new ArrayList<NodeData>();
-        weight = tspHelper(tempPath, distances, temp, closestToCenter.getKey());
-        if (weight < minWeight) {
-            minWeight = weight;
-            minPath = tempPath;
-            ans = closestToCenter;
-        }
-//        }
-        minPath.add(ans);
-        Collections.reverse(minPath);
+        myPath.add(myCities.get(0));
         ArrayList<NodeData> path = new ArrayList<NodeData>();
-        System.out.println(minWeight);
-        System.out.println(minPath);
-
-        for (int i = 0; i < minPath.size() - 1; i++) {
-            ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(minPath.get(i).getKey(), minPath.get(i + 1).getKey());
+        for (int i = 0; i < myPath.size() - 1; i++) {
+            ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(myPath.get(i).getKey(), myPath.get(i + 1).getKey());
             if (i > 0) {
                 addToPath.remove(0);
             }
@@ -343,7 +249,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return path;
     }
 
-    private NodeData closestNodeFinder(NodeData src, ArrayList<NodeData> cities){
+    private NodeData closestNodeFinder(NodeData src, ArrayList<NodeData> cities) {
         PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), new NodeComparator());
         src.setWeight(0); //  O(1)
         ((Node)src).setPrev(null);
@@ -378,6 +284,45 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return null;
     }
 
+    public List<NodeData> tspLong(List<NodeData> cities) {
+        HashMap<Integer, NodeData> myCities = new HashMap<Integer, NodeData>();
+        for (NodeData city : cities) {
+            myCities.put(city.getKey(), city);
+        }
+        HashMap<String, Double> distances = new HashMap<String, Double>();
+        for (int i : myCities.keySet()) {
+            for (int j : myCities.keySet()) {
+                if (i != j) {
+                    distances.put(myCities.get(i).getKey() + "->" + myCities.get(j).getKey(), shortestPathDist(myCities.get(i).getKey(), myCities.get(j).getKey()));
+                }
+            }
+        }
+        double minWeight = Double.MAX_VALUE, weight;
+        ArrayList<NodeData> minPath = new ArrayList<>();
+        NodeData ans = null;
+        NodeData start = cities.get(0);
+        HashMap<Integer, NodeData> temp = new HashMap<>(myCities);
+        temp.remove(start.getKey());
+        ArrayList<NodeData> tempPath = new ArrayList<>();
+        weight = tspHelper(tempPath, distances, temp, start.getKey());
+        if (weight < minWeight) {
+            minWeight = weight;
+            minPath = tempPath;
+            ans = start;
+        }
+        minPath.add(ans);
+        Collections.reverse(minPath);
+        ArrayList<NodeData> path = new ArrayList<>();
+        for (int i = 0; i < minPath.size() - 1; i++) {
+            ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(minPath.get(i).getKey(), minPath.get(i + 1).getKey());
+            if (i > 0) {
+                addToPath.remove(0);
+            }
+            path.addAll(addToPath);
+        }
+        return path;
+    }
+
     private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int curr) {
         if (cities.size() == 0) {
             return 0;
@@ -403,19 +348,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         path.addAll(minPath);
         path.add(ans);
         return minWeight;
-    }
-
-    private NodeData closestToCenter(NodeData center, List<NodeData> cities) {
-        double minWeight = 0, weight;
-        NodeData ans = null;
-        for (NodeData n : cities) {
-            weight = shortestPathDist(center.getKey(), n.getKey());
-            if (weight > minWeight) {
-                minWeight = weight;
-                ans = n;
-            }
-        }
-        return ans;
     }
 
     @Override
@@ -451,10 +383,10 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return true;
     }
 
-//    @Override
-//    public String toString() {
-//        return "MyDirectedWeightedGraphAlgorithms{" +
-//                "graph=" + graph +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "MyDirectedWeightedGraphAlgorithms{" +
+                "graph=" + graph +
+                '}';
+    }
 }
