@@ -139,6 +139,32 @@ public class Ex2 {
 //        somPath.add(ga1.getGraph().getNode(1));
 //        somPath.add(ga1.getGraph().getNode(2));
 //        somPath.add(ga1.getGraph().getNode(3));
+
+        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/10000Nodes.json");
+
+        List<NodeData> somePath = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            somePath.add(dwga.getGraph().getNode(i));
+        }
+
+        long start = System.currentTimeMillis();
+        List<NodeData> res = dwga.tsp(somePath);
+        System.out.println(res);
+        long end = System.currentTimeMillis();
+
+        System.out.println("time: " + (end - start));
+
+        double weight = 0;
+        for (int i = 0; i < res.size()-1; i++) {
+            weight += dwga.shortestPathDist(res.get(i).getKey(), res.get(i+1).getKey());
+        }
+        System.out.println("weight: " + weight);
+
+
+//        somPath.add(dwga.getGraph().getNode(0));
+//        somPath.add(dwga.getGraph().getNode(1));
+//        somPath.add(dwga.getGraph().getNode(2));
+//        somPath.add(dwga.getGraph().getNode(3));
 //        somPath.add(dwga.getGraph().getNode(4));
 //        somPath.add(dwga.getGraph().getNode(5));
 //        somPath.add(dwga.getGraph().getNode(6));
@@ -156,6 +182,8 @@ public class Ex2 {
 //        System.out.println("CENTER: " + ga1.center());
 //
 //       System.out.println(ga1.tsp(somPath));
+
+//        System.out.println("CENTER: " + dwga.center());
 
 
 //        System.out.println(dwga.shortestPath(1,2));
@@ -184,10 +212,10 @@ public class Ex2 {
 //        System.out.println(pq);
        // System.out.println(pq);
 
-        DirectedWeightedGraph g1 = getGrapg("data/1000Nodes.json");
-        DirectedWeightedGraphAlgorithms ga1 = new MyDirectedWeightedGraphAlgorithms();
-         ga1.init(g1);
-        System.out.println(ga1.center());
+//        DirectedWeightedGraph g1 = getGrapg("data/1000Nodes.json");
+//        DirectedWeightedGraphAlgorithms ga1 = new MyDirectedWeightedGraphAlgorithms();
+//         ga1.init(g1);
+//        System.out.println(ga1.center());
 
     }
 }
