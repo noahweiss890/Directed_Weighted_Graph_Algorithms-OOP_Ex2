@@ -120,20 +120,25 @@ public class Ex2 {
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
 //        EdgeData e = dwg.removeEdge(1,2);
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
+//        DirectedWeightedGraph g1 = getGrapg("data/bla.json");
+//        DirectedWeightedGraphAlgorithms ga1 = new MyDirectedWeightedGraphAlgorithms();
+//        ga1.init(g1);
+       // System.out.println(ga1.shortestPath(3,1));
 
-        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/G1.json");
+       // DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/bla.json");
+
 //        System.out.println(dwga + "\n");
 //        dwga.load("data/G2.json");
 //        System.out.println(dwga + "\n");
 //        dwga.save("src/testing.json");
 //        dwga.load("data/G2.json");
 //        dwga.save("src/testing.json");
-
-        List<NodeData> somPath = new ArrayList<>();
-        somPath.add(dwga.getGraph().getNode(0));
-        somPath.add(dwga.getGraph().getNode(1));
-        somPath.add(dwga.getGraph().getNode(2));
-        somPath.add(dwga.getGraph().getNode(3));
+//
+//        List<NodeData> somPath = new ArrayList<>();
+//        somPath.add(ga1.getGraph().getNode(0));
+//        somPath.add(ga1.getGraph().getNode(1));
+//        somPath.add(ga1.getGraph().getNode(2));
+//        somPath.add(ga1.getGraph().getNode(3));
 //        somPath.add(dwga.getGraph().getNode(4));
 //        somPath.add(dwga.getGraph().getNode(5));
 //        somPath.add(dwga.getGraph().getNode(6));
@@ -148,20 +153,21 @@ public class Ex2 {
 //        somPath.add(dwga.getGraph().getNode(15));
 //        somPath.add(dwga.getGraph().getNode(16));
 
-        System.out.println("CENTER: " + dwga.center());
+//        System.out.println("CENTER: " + ga1.center());
+//
+//       System.out.println(ga1.tsp(somPath));
 
-        System.out.println(dwga.tsp(somPath));
 
 //        System.out.println(dwga.shortestPath(1,2));
 
-        System.out.println(dwga.center());
-        DirectedWeightedGraph graph2 = getGrapg("data/mygraph2.json");
-        DirectedWeightedGraphAlgorithms alg2 = new MyDirectedWeightedGraphAlgorithms();
-        alg2.init(graph2);
-        System.out.println(alg2.shortestPathDist(2,7));
-        System.out.println(alg2.shortestPath(2,7));
-        System.out.println(alg2.isConnected());
-        System.out.println(alg2.center());
+//        System.out.println(dwga.center());
+//        DirectedWeightedGraph graph2 = getGrapg("data/mygraph2.json");
+//        DirectedWeightedGraphAlgorithms alg2 = new MyDirectedWeightedGraphAlgorithms();
+//        alg2.init(graph2);
+//        System.out.println(alg2.shortestPathDist(2,7));
+//        System.out.println(alg2.shortestPath(2,7));
+//        System.out.println(alg2.isConnected());
+//        System.out.println(alg2.center());
 //        PriorityQueue<Node> pq = new PriorityQueue<>(graph1.nodeSize(), new NodeComparator());
 //        Iterator nodeIt = graph1.nodeIter();
 //        while(nodeIt.hasNext()){
@@ -177,6 +183,11 @@ public class Ex2 {
 //         pq.offer(r);
 //        System.out.println(pq);
        // System.out.println(pq);
+
+        DirectedWeightedGraph g1 = getGrapg("data/1000Nodes.json");
+        DirectedWeightedGraphAlgorithms ga1 = new MyDirectedWeightedGraphAlgorithms();
+         ga1.init(g1);
+        System.out.println(ga1.center());
 
     }
 }
