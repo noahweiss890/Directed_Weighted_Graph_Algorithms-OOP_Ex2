@@ -194,7 +194,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     //O(n^4logn)
     public NodeData center() {
         DirectedWeightedGraph copied_graph = this.copy();
-        if(isConnected() == false) {
+        if(!isConnected()) {
             return null;
         }
         //ArrayList<Double> eccentricity_list = new ArrayList<Double>();
@@ -231,54 +231,73 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         HashMap<Integer, NodeData> myCities = new HashMap<Integer, NodeData>();
-        for (int i = 0; i < cities.size(); i++) {
-            myCities.put(cities.get(i).getKey(), cities.get(i));
+        for (NodeData city : cities) {
+            myCities.put(city.getKey(), city);
         }
         HashMap<String, Double> distances = new HashMap<String, Double>();
+//        System.out.println("BEFORE: " + shortestPath(2,3));
         for (int i: myCities.keySet()) {
             for (int j: myCities.keySet()) {
-                distances.put(myCities.get(i).getKey() + "->" + myCities.get(j).getKey(), shortestPathDist(myCities.get(i).getKey(), myCities.get(j).getKey()));
+                if (i != j) {
+                    distances.put(myCities.get(i).getKey() + "->" + myCities.get(j).getKey(), shortestPathDist(myCities.get(i).getKey(), myCities.get(j).getKey()));
+                }
             }
         }
+//        System.out.println("HELLO!");
         double minWeight = Double.MAX_VALUE, weight;
         ArrayList<NodeData> minPath = new ArrayList<NodeData>();
-        for (Map.Entry<Integer, NodeData> n: myCities.entrySet()) {  // who is the starting city?
-            HashMap<Integer, NodeData> temp = (HashMap<Integer, NodeData>)myCities.clone();
-            temp.remove(n.getKey());
-            ArrayList<NodeData> tempPath = new ArrayList<NodeData>();
-            tempPath.add(n.getValue());
-            weight = tspHelper(tempPath, distances, temp, n.getKey(), n.getKey());
+        NodeData ans = null;
+        NodeData starterNode = center();
+//        for (Map.Entry<Integer, NodeData> n: myCities.entrySet()) {  // who is the starting city?
+            HashMap<Integer, NodeData> temp = new HashMap<Integer, NodeData>(myCities);
+//            temp.remove(n.getKey());
+        temp.remove(starterNode.getKey());
+        ArrayList<NodeData> tempPath = new ArrayList<NodeData>();
+            weight = tspHelper(tempPath, distances, temp, starterNode.getKey());
             if(weight < minWeight) {
                 minWeight = weight;
                 minPath = tempPath;
+                ans = starterNode;
             }
-        }
-        System.out.println("DONE!");
-        System.out.println("the tsp weight is: " + minWeight);
+//        }
+//        System.out.println("AFTER: " + shortestPath(2,3));
+        minPath.add(ans);
+        Collections.reverse(minPath);
         ArrayList<NodeData> path = new ArrayList<NodeData>();
+        System.out.println(minWeight);
+        System.out.println(minPath);
         for (int i = 0; i < minPath.size()-1; i++) {
             System.out.println("i: " + i);
+            System.out.println(minPath.get(i).getKey() + "->" + minPath.get(i+1).getKey());
             path.addAll(shortestPath(minPath.get(i).getKey(), minPath.get(i+1).getKey()));
         }
         return path;
     }
 
-    private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int start, int curr) {
+    private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int curr) {
         if(cities.size() == 0) {
-            return distances.get(curr + "->" + start);
+            return 0;
         }
         double minWeight = Double.MAX_VALUE, weight;
         NodeData ans = null;
+        ArrayList<NodeData> minPath = new ArrayList<NodeData>();
         for(Map.Entry<Integer, NodeData> n: cities.entrySet()) {
-            HashMap<Integer, NodeData> temp = (HashMap<Integer, NodeData>)cities.clone();
+            HashMap<Integer, NodeData> temp = new HashMap<Integer, NodeData>(cities);
             temp.remove(n.getKey());
-            weight = distances.get(curr + "->" + n.getKey()) + tspHelper(path, distances, temp, start, n.getKey());
-            if(weight < minWeight) {
-                minWeight = weight;
-                ans = n.getValue();
+            ArrayList<NodeData> tempPath = new ArrayList<NodeData>(path);
+            double dist = distances.get(curr + "->" + n.getKey());
+            if(dist != -1) {
+                weight = dist + tspHelper(tempPath, distances, temp, n.getKey());
+                if (weight < minWeight) {
+                    minWeight = weight;
+                    ans = n.getValue();
+                    path.clear();
+                    minPath = tempPath;
+                }
             }
         }
-        path.add(1, ans);
+        path.addAll(minPath);
+        path.add(ans);
         return minWeight;
     }
 
