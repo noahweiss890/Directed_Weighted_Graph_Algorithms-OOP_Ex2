@@ -164,7 +164,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), new NodeComparator());
         NodeData srcNode = graph.getNode(src);
         srcNode.setWeight(0);
-        srcNode.setPrev(null);
+        ((Node)srcNode).setPrev(null);
         minWeight.offer(srcNode);
         Iterator<NodeData> nIterator = graph.nodeIter();
         while (nIterator.hasNext()) {
@@ -260,9 +260,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return path;
     }
 
-    private NodeData closestNodeFinder(NodeData src, ArrayList<NodeData> cities) {
-        return null;
-    }
+
 
 
 //    @Override
