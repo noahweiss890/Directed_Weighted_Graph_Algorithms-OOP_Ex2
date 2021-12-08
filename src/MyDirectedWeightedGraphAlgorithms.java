@@ -14,7 +14,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     private DirectedWeightedGraph graph;
 
-    public MyDirectedWeightedGraphAlgorithms() {
+    public MyDirectedWeightedGraphAlgorithms() {  // constructor
         graph = null;
     }
 
@@ -29,7 +29,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     @Override
-    public DirectedWeightedGraph copy() {
+    public DirectedWeightedGraph copy() {  // deep copy
         return ((MyDirectedWeightedGraph) graph).copy();
     }
 
@@ -55,12 +55,11 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     //receives a graph and returns the transpose of that graph
-    private DirectedWeightedGraph Transpose(MyDirectedWeightedGraph g) {
+    private DirectedWeightedGraph transpose(MyDirectedWeightedGraph g) {
         DirectedWeightedGraph gt = g.copy();
         Iterator<EdgeData> edgeIt = g.edgeIter();
         while (edgeIt.hasNext()) {
             EdgeData eIt = edgeIt.next();
-            //  gt.removeEdge(eIt.getSrc(), eIt.getDest());
             gt.connect(eIt.getDest(), eIt.getSrc(), eIt.getWeight());
         }
         return gt;
@@ -83,7 +82,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
             NodeData gNode2 = nIterator2.next();
             gNode2.setTag(0); //resets to zero
         }
-        DirectedWeightedGraph gt = Transpose((MyDirectedWeightedGraph) graph); //tranposes the graph
+        DirectedWeightedGraph gt = transpose((MyDirectedWeightedGraph) graph); //tranposes the graph
         DFS_visit(gt, n); //dfs again
         Iterator<NodeData> gtIterator = gt.nodeIter(); //goes through all nodes in graph
         while (gtIterator.hasNext()) {
@@ -227,19 +226,19 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     @Override
-    public List<NodeData> tsp(List<NodeData> cities) {
+    public List<NodeData> tsp(List<NodeData> cities) {  // finds a path that visits all of the nodes in the given list. this function is an implementation of a greedy algorithm. this implementation will be quicker than the dynamic algo but will be farther from the true answer
         ArrayList<NodeData> myPath = new ArrayList<>();
         ArrayList<NodeData> myCities = new ArrayList<>(cities);
-        NodeData curr = myCities.get(0);
+        NodeData curr = myCities.get(0);  // starts from the first node in the list
         do {
-            myPath.add(curr);
-            myCities.remove(curr);
-            curr = closestNodeFinder(curr, myCities);
+            myPath.add(curr);  // adds the curr to the path
+            myCities.remove(curr);  // removes the path from the nodes remaining
+            curr = closestNodeFinder(curr, myCities);  // finds the closest node to the curr node, and then make that the curr the result
         }
-        while(myCities.size() > 1);
-        myPath.add(myCities.get(0));
-        ArrayList<NodeData> path = new ArrayList<NodeData>();
-        for (int i = 0; i < myPath.size() - 1; i++) {
+        while(myCities.size() > 1);  // until there is only one node left in myCities
+        myPath.add(myCities.get(0));  // add the last city to the end
+        ArrayList<NodeData> path = new ArrayList<>();
+        for (int i = 0; i < myPath.size() - 1; i++) {  // checks which nodes we need to pass on the way to get from any two adjacent nodes in myPath and adds them to path
             ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(myPath.get(i).getKey(), myPath.get(i + 1).getKey());
             if (i > 0) {
                 addToPath.remove(0);
@@ -250,7 +249,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     private NodeData closestNodeFinder(NodeData src, ArrayList<NodeData> cities) {
-        PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), new NodeComparator());
+        PriorityQueue<NodeData> minWeight = new PriorityQueue<>(graph.nodeSize(), new NodeComparator());
         src.setWeight(0); //  O(1)
         ((Node)src).setPrev(null);
         minWeight.offer(src); //O(logV)
@@ -284,12 +283,12 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return null;
     }
 
-    public List<NodeData> tspLong(List<NodeData> cities) {
-        HashMap<Integer, NodeData> myCities = new HashMap<Integer, NodeData>();
+    public List<NodeData> tspDynamic(List<NodeData> cities) {  // finds a path that visits all of the nodes in the given list. this function is an implementation of a dynamic algorithm. this implementation will be more exact to the true answer but it will take longer to compute than the previous greedy function
+        HashMap<Integer, NodeData> myCities = new HashMap<>();  // this will hold all of the given nodes
         for (NodeData city : cities) {
             myCities.put(city.getKey(), city);
         }
-        HashMap<String, Double> distances = new HashMap<String, Double>();
+        HashMap<String, Double> distances = new HashMap<>();  // this will hold all of the shortest distances from any two nodes
         for (int i : myCities.keySet()) {
             for (int j : myCities.keySet()) {
                 if (i != j) {
@@ -297,24 +296,16 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 }
             }
         }
-        double minWeight = Double.MAX_VALUE, weight;
-        ArrayList<NodeData> minPath = new ArrayList<>();
-        NodeData ans = null;
-        NodeData start = cities.get(0);
+        NodeData start = cities.get(0);  // start from the first node in cities
         HashMap<Integer, NodeData> temp = new HashMap<>(myCities);
         temp.remove(start.getKey());
         ArrayList<NodeData> tempPath = new ArrayList<>();
-        weight = tspHelper(tempPath, distances, temp, start.getKey());
-        if (weight < minWeight) {
-            minWeight = weight;
-            minPath = tempPath;
-            ans = start;
-        }
-        minPath.add(ans);
-        Collections.reverse(minPath);
+        tspHelper(tempPath, distances, temp, start.getKey());
+        tempPath.add(start);
+        Collections.reverse(tempPath);
         ArrayList<NodeData> path = new ArrayList<>();
-        for (int i = 0; i < minPath.size() - 1; i++) {
-            ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(minPath.get(i).getKey(), minPath.get(i + 1).getKey());
+        for (int i = 0; i < tempPath.size() - 1; i++) {  // checks which nodes we need to pass on the way to get from any two adjacent nodes in myPath and adds them to path
+            ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(tempPath.get(i).getKey(), tempPath.get(i + 1).getKey());
             if (i > 0) {
                 addToPath.remove(0);
             }
@@ -323,19 +314,19 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return path;
     }
 
-    private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int curr) {
-        if (cities.size() == 0) {
+    private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int curr) {  // recursive function that goes through the options of the next possible node and returns the weight of the minimum option
+        if (cities.size() == 0) {  // base case, all nodes have been visited
             return 0;
         }
         double minWeight = Double.MAX_VALUE, weight;
         NodeData ans = null;
-        ArrayList<NodeData> minPath = new ArrayList<NodeData>();
-        for (Map.Entry<Integer, NodeData> n : cities.entrySet()) {
-            HashMap<Integer, NodeData> temp = new HashMap<Integer, NodeData>(cities);
+        ArrayList<NodeData> minPath = new ArrayList<>();
+        for (Map.Entry<Integer, NodeData> n : cities.entrySet()) {  // check all of the possibilities that can be the next node to visit
+            HashMap<Integer, NodeData> temp = new HashMap<>(cities);
             temp.remove(n.getKey());
-            ArrayList<NodeData> tempPath = new ArrayList<NodeData>(path);
+            ArrayList<NodeData> tempPath = new ArrayList<>(path);
             double dist = distances.get(curr + "->" + n.getKey());
-            if (dist != -1) {
+            if (dist != -1) {  // if there's a path between curr n.getKey()
                 weight = dist + tspHelper(tempPath, distances, temp, n.getKey());
                 if (weight < minWeight) {
                     minWeight = weight;
@@ -351,10 +342,10 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     @Override
-    public boolean save(String file) {
+    public boolean save(String file) {  // saves the graph into a json file
         try {
             GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(MyDirectedWeightedGraph.class, new DirectedWeightedGraphSerializer());
+            builder.registerTypeAdapter(MyDirectedWeightedGraph.class, new DirectedWeightedGraphSerializer());  // uses my custom serializer
             builder.setPrettyPrinting();
             Gson gson = builder.create();
             String json = gson.toJson(this.graph);
@@ -368,9 +359,9 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     }
 
     @Override
-    public boolean load(String file) {
-        DirectedWeightedGraph newGraph;
+    public boolean load(String file) { // loads a graph from a json file
         try {
+            DirectedWeightedGraph newGraph;
             GsonBuilder builder = new GsonBuilder();
             builder.registerTypeAdapter(MyDirectedWeightedGraph.class, new DirectedWeightedGraphDeserializer());
             Gson gson = builder.create();

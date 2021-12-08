@@ -1,20 +1,11 @@
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
-import api.EdgeData;
 import api.NodeData;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import netscape.javascript.JSObject;
 import com.google.gson.*;
 import com.google.gson.GsonBuilder;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -143,10 +134,10 @@ public class Ex2 {
 //        somPath.add(ga1.getGraph().getNode(2));
 //        somPath.add(ga1.getGraph().getNode(3));
 
-        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/100000.json");
+        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/G3.json");
 
         List<NodeData> somePath = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 10; i++) {
             somePath.add(dwga.getGraph().getNode(i));
         }
 
@@ -166,7 +157,7 @@ public class Ex2 {
         System.out.println("\n\n");
 
         start = System.currentTimeMillis();
-        res = ((MyDirectedWeightedGraphAlgorithms)dwga).tspLong(somePath);
+        res = ((MyDirectedWeightedGraphAlgorithms)dwga).tspDynamic(somePath);
         System.out.println(res);
         end = System.currentTimeMillis();
 
