@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class is the main class for Ex2 - your implementation will be tested using this class.
@@ -83,6 +80,30 @@ public class Ex2 {
     }
 
     public static void main(String[] args) {
+
+ //       DirectedWeightedGraph graph2 = getGrapg("data/G2.json");
+//        DirectedWeightedGraph graph3 = getGrapg("data/G3.json");
+//        DirectedWeightedGraphAlgorithms alg1 = new MyDirectedWeightedGraphAlgorithms();
+  //      DirectedWeightedGraphAlgorithms alg2 = new MyDirectedWeightedGraphAlgorithms();
+  //      alg2.init(graph2);
+     //   System.out.println(alg2.shortestPathDist(4, 29));
+    //    System.out.println(alg2.shortestPath(4, 29));
+//        DirectedWeightedGraphAlgorithms alg3 = new MyDirectedWeightedGraphAlgorithms();
+//        alg1.init(graph1);
+//        alg2.init(graph2);
+//        alg3.init(graph3);
+//        System.out.println(alg1.shortestPathDist(2,16));
+//        System.out.println(alg1.shortestPath(2,16));
+//        System.out.println(alg1.isConnected());
+//        System.out.println(alg1.center());
+//         DirectedWeightedGraph graph1 = getGrapg("data/mygraph2.json");
+
+//       System.out.println(alg1.shortestPathDist(2,7));
+//       System.out.println(alg1.shortestPath(2,7));
+      //  System.out.println(alg1.shortestPath(7,2));
+      //  System.out.println(alg1.isConnected());
+      //  System.out.println(alg1.center());
+
 //        DirectedWeightedGraph dwg = getGrapg("data/G1.json");
 //        DirectedWeightedGraph dwg2 = getGrapg("data/G2.json");
 //        DirectedWeightedGraphAlgorithms dawg2 = new MyDirectedWeightedGraphAlgorithms();
@@ -134,5 +155,28 @@ public class Ex2 {
 //        System.out.println(dwga.shortestPath(1,2));
 
         System.out.println(dwga.center());
+        DirectedWeightedGraph graph2 = getGrapg("data/mygraph2.json");
+        DirectedWeightedGraphAlgorithms alg2 = new MyDirectedWeightedGraphAlgorithms();
+        alg2.init(graph2);
+        System.out.println(alg2.shortestPathDist(2,7));
+        System.out.println(alg2.shortestPath(2,7));
+        System.out.println(alg2.isConnected());
+        System.out.println(alg2.center());
+//        PriorityQueue<Node> pq = new PriorityQueue<>(graph1.nodeSize(), new NodeComparator());
+//        Iterator nodeIt = graph1.nodeIter();
+//        while(nodeIt.hasNext()){
+//            Node n = (Node) nodeIt.next();
+//            n.setWeight(Double.MAX_VALUE);
+//            pq.offer(n);
+//
+//        }
+//         System.out.println(pq);
+//         Node r = (Node) graph1.getNode(10);
+//         r.setWeight(3);
+//         pq.remove(r);
+//         pq.offer(r);
+//        System.out.println(pq);
+       // System.out.println(pq);
+
     }
 }

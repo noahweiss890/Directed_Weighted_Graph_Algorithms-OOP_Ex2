@@ -114,11 +114,11 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         }
         //O(V+E) * O(logV) = O(ElogV)
         while (!minWeight.isEmpty()) {
-            if(minWeight.peek() == graph.getNode(dest)){
-                return minWeight.peek().getWeight();
-            }
             if(minWeight.peek().getWeight() == Double.MAX_VALUE){
                 return -1;
+            }
+            if(minWeight.peek() == graph.getNode(dest)){
+                return minWeight.peek().getWeight();
             }
             Node curr = minWeight.poll(); //O(logV)
             Iterator<EdgeData> eIterator = graph.edgeIter(curr.getKey());
@@ -129,13 +129,11 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
                     neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
                     neighbor.setPrev(curr);
+                    minWeight.remove(neighbor);
                     minWeight.offer(neighbor); //O(logv)
                 }
             }
         }
-//        if(graph.getNode(dest).getWeight() == Double.MAX_VALUE){
-//            return -1;
-//        }
         return graph.getNode(dest).getWeight();
     }
 
@@ -161,11 +159,11 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         }
 
         while (!minWeight.isEmpty()) {
-            if(minWeight.peek() == graph.getNode(dest)){
-                break;
-            }
             if(minWeight.peek().getWeight() == Double.MAX_VALUE){
                 return null;
+            }
+            if(minWeight.peek() == graph.getNode(dest)){
+                break;
             }
             Node curr = minWeight.poll();
             Iterator<EdgeData> eIterator = graph.edgeIter(curr.getKey());
@@ -176,6 +174,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
                     neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
                     neighbor.setPrev(curr);
+                    minWeight.remove(neighbor);
                     minWeight.offer(neighbor);
                 }
             }
@@ -191,7 +190,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
 
     @Override
-    //O(n^4logn)
+    //O()
     public NodeData center() {
         DirectedWeightedGraph copied_graph = this.copy();
         if(!isConnected()) {
@@ -212,7 +211,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 Node u = (Node) nodeIt2.next();
                 int key_u = u.getKey();
                 Node graph_u = (Node) this.getGraph().getNode(key_u);
-                double shortest_dist = shortestPathDist(graph_n.getKey(),graph_u.getKey()); //O(n^2logn)
+                double shortest_dist = shortestPathDist(graph_n.getKey(),graph_u.getKey()); //O(ElogV)
                 if(shortest_dist > ecc){
                     ecc = shortest_dist;
                 }
