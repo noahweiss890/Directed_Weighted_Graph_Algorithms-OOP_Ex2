@@ -121,26 +121,40 @@ public class Ex2 {
 //        EdgeData e = dwg.removeEdge(1,2);
 //        System.out.println(((Node)dwg.getNode(2)).inDegree());
 
-//        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/bla.json");
+        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/G1.json");
 //        System.out.println(dwga + "\n");
 //        dwga.load("data/G2.json");
 //        System.out.println(dwga + "\n");
 //        dwga.save("src/testing.json");
 //        dwga.load("data/G2.json");
 //        dwga.save("src/testing.json");
-//
-//        List<NodeData> somPath = new ArrayList<>();
-//        somPath.add(dwga.getGraph().getNode(1));
-//        somPath.add(dwga.getGraph().getNode(2));
-//        somPath.add(dwga.getGraph().getNode(3));
+
+        List<NodeData> somPath = new ArrayList<>();
+        somPath.add(dwga.getGraph().getNode(0));
+        somPath.add(dwga.getGraph().getNode(1));
+        somPath.add(dwga.getGraph().getNode(2));
+        somPath.add(dwga.getGraph().getNode(3));
 //        somPath.add(dwga.getGraph().getNode(4));
-//
-//        dwga.tsp(somPath);
-//        DirectedWeightedGraph graph1 = getGrapg("data/G1.json");
-//        DirectedWeightedGraphAlgorithms alg1 = new MyDirectedWeightedGraphAlgorithms();
-//        alg1.init(graph1);
-//        System.out.println(alg1.shortestPathDist(2,7));
-//        System.out.println(alg1.shortestPath(2,7));
+//        somPath.add(dwga.getGraph().getNode(5));
+//        somPath.add(dwga.getGraph().getNode(6));
+//        somPath.add(dwga.getGraph().getNode(7));
+//        somPath.add(dwga.getGraph().getNode(8));
+//        somPath.add(dwga.getGraph().getNode(9));
+//        somPath.add(dwga.getGraph().getNode(10));
+//        somPath.add(dwga.getGraph().getNode(11));
+//        somPath.add(dwga.getGraph().getNode(12));
+//        somPath.add(dwga.getGraph().getNode(13));
+//        somPath.add(dwga.getGraph().getNode(14));
+//        somPath.add(dwga.getGraph().getNode(15));
+//        somPath.add(dwga.getGraph().getNode(16));
+
+        System.out.println("CENTER: " + dwga.center());
+
+        System.out.println(dwga.tsp(somPath));
+
+//        System.out.println(dwga.shortestPath(1,2));
+
+        System.out.println(dwga.center());
         DirectedWeightedGraph graph2 = getGrapg("data/mygraph2.json");
         DirectedWeightedGraphAlgorithms alg2 = new MyDirectedWeightedGraphAlgorithms();
         alg2.init(graph2);
