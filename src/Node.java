@@ -1,7 +1,6 @@
 import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
-import com.google.gson.annotations.Expose;
 
 import java.util.HashMap;
 
