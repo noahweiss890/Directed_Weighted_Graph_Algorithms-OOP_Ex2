@@ -122,17 +122,17 @@ public class Node implements NodeData {
         return outEdges;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Node{" +
-//                "location=" + location +
-//                ", key=" + key +
-//                ", weight=" + weight +
-//                ", info='" + info + '\'' +
-//                ", tag=" + tag +
-//                ", inEdges=" + inEdges +
-//                ", outEdges=" + outEdges +
-//                ", prev node=" + prev +
-//                '}' + "\n";
-//    }
+    @Override
+    public String toString() {
+        return "Node{" +
+                "location=" + location +
+                ", key=" + key +
+                ", weight=" + weight +
+                ", info='" + info + '\'' +
+                ", tag=" + tag +
+                ", inEdges=" + inEdges +
+                ", outEdges=" + outEdges +
+                ", prev node=" + prev +
+                '}' + "\n";
+    }
 }
