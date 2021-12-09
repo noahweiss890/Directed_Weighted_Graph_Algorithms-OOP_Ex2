@@ -66,9 +66,11 @@ public class Ex2 {
      * @param json_file - a json file (e.g., G1.json - G3.gson)
      */
     public static void runGUI(String json_file) {
-        DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
         // ****** Add your code here ******
 
+        DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
+        Window window = new Window(alg);
+        window.setVisible(true);
 
         // ********************************
     }
@@ -133,41 +135,41 @@ public class Ex2 {
 //        somPath.add(ga1.getGraph().getNode(1));
 //        somPath.add(ga1.getGraph().getNode(2));
 //        somPath.add(ga1.getGraph().getNode(3));
-
-        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/G3.json");
-
-        List<NodeData> somePath = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            somePath.add(dwga.getGraph().getNode(i));
-        }
-
-        long start = System.currentTimeMillis();
-        List<NodeData> res = dwga.tsp(somePath);
-        System.out.println(res);
-        long end = System.currentTimeMillis();
-
-        System.out.println("time: " + (end - start));
-
-        double weight = 0;
-        for (int i = 0; i < res.size()-1; i++) {
-            weight += dwga.shortestPathDist(res.get(i).getKey(), res.get(i+1).getKey());
-        }
-        System.out.println("weight: " + weight);
-
-        System.out.println("\n\n");
-
-        start = System.currentTimeMillis();
-        res = ((MyDirectedWeightedGraphAlgorithms)dwga).tspDynamic(somePath);
-        System.out.println(res);
-        end = System.currentTimeMillis();
-
-        System.out.println("time: " + (end - start));
-
-        weight = 0;
-        for (int i = 0; i < res.size()-1; i++) {
-            weight += dwga.shortestPathDist(res.get(i).getKey(), res.get(i+1).getKey());
-        }
-        System.out.println("weight: " + weight);
+//
+//        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/mygraph2.json");
+//
+//        List<NodeData> somePath = new ArrayList<>();
+//        for (int i = 0; i < 6; i++) {
+//            somePath.add(dwga.getGraph().getNode(i));
+//        }
+//
+//        long start = System.currentTimeMillis();
+//        List<NodeData> res = dwga.tsp(somePath);
+//        System.out.println(res);
+//        long end = System.currentTimeMillis();
+//
+//        System.out.println("time: " + (end - start));
+//
+//        double weight = 0;
+//        for (int i = 0; i < res.size()-1; i++) {
+//            weight += dwga.shortestPathDist(res.get(i).getKey(), res.get(i+1).getKey());
+//        }
+//        System.out.println("weight: " + weight);
+//
+//        System.out.println("\n\n");
+//
+//        start = System.currentTimeMillis();
+//        res = ((MyDirectedWeightedGraphAlgorithms)dwga).tspLong(somePath);
+//        System.out.println(res);
+//        end = System.currentTimeMillis();
+//
+//        System.out.println("time: " + (end - start));
+//
+//        weight = 0;
+//        for (int i = 0; i < res.size()-1; i++) {
+//            weight += dwga.shortestPathDist(res.get(i).getKey(), res.get(i+1).getKey());
+//        }
+//        System.out.println("weight: " + weight);
 
 
 
@@ -227,5 +229,6 @@ public class Ex2 {
 //         ga1.init(g1);
 //        System.out.println(ga1.center());
 
+        runGUI("data/G2.json");
     }
 }
