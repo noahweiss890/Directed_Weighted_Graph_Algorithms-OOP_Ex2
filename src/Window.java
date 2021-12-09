@@ -197,7 +197,17 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == addNode) {
-            System.out.println("will replace with adding node");
+            String coordinates1 =  JOptionPane.showInputDialog("Enter X Coordinate new Node");
+           // Double x = Double.parseDouble(coordinates1);
+            String coordinates2 =  JOptionPane.showInputDialog("Enter Y Coordinate new Node");
+            //Double y = Double.parseDouble(coordinates2);
+            String coordinates3 =  JOptionPane.showInputDialog("Enter Z Coordinate new Node");
+            //Double z = Double.parseDouble(coordinates3);
+            String coordinates4 =  JOptionPane.showInputDialog("Enter ID new Node");
+            int id = Integer.parseInt(coordinates4);
+            NodeData n1 = new Node(coordinates1 + "," + coordinates2 + "," + coordinates3 ,id);
+            dwga.getGraph().addNode(n1);
+            repaint();
         }
         if (e.getSource() == removeNode) {
             System.out.println("will replace with removing node");
