@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 
@@ -50,7 +51,7 @@ public class Window extends JFrame implements ActionListener {
 
     private void MenuBar() {
         menuPanel = new JPanel();
-        menuPanel.setBounds(0,0, 1000, 50);
+        menuPanel.setBounds(0, 0, 1000, 50);
 
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
@@ -127,18 +128,18 @@ public class Window extends JFrame implements ActionListener {
         Graphics2D g2D = (Graphics2D) g;
         Iterator<NodeData> nIt = dwga.getGraph().nodeIter();
         double minX = Double.MAX_VALUE, maxX = 0, minY = Double.MAX_VALUE, maxY = 0;
-        while(nIt.hasNext()) {
+        while (nIt.hasNext()) {
             NodeData n = nIt.next();
-            if(n.getLocation().x() < minX) {
+            if (n.getLocation().x() < minX) {
                 minX = n.getLocation().x();
             }
-            if(n.getLocation().x() > maxX) {
+            if (n.getLocation().x() > maxX) {
                 maxX = n.getLocation().x();
             }
-            if(n.getLocation().y() < minY) {
+            if (n.getLocation().y() < minY) {
                 minY = n.getLocation().y();
             }
-            if(n.getLocation().y() > maxY) {
+            if (n.getLocation().y() > maxY) {
                 maxY = n.getLocation().y();
             }
         }
@@ -148,15 +149,15 @@ public class Window extends JFrame implements ActionListener {
             EdgeData e = eIt.next();
             NodeData nSrc = dwga.getGraph().getNode(e.getSrc());
             NodeData nDest = dwga.getGraph().getNode(e.getDest());
-            g2D.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
+            g2D.drawLine((int) (((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width - 50) + 25), (int) (((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height - 150) + 100), (int) (((nDest.getLocation().x() - minX) / (maxX - minX)) * (width - 50) + 25), (int) (((nDest.getLocation().y() - minY) / (maxY - minY)) * (height - 150) + 100));
         }
         nIt = dwga.getGraph().nodeIter();
         while (nIt.hasNext()) {
             NodeData n = nIt.next();
             g2D.setColor(Color.RED);
-            g2D.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
+            g2D.fillOval((int) (((n.getLocation().x() - minX) / (maxX - minX)) * (width - 50) - kRADIUS + 25), (int) (((n.getLocation().y() - minY) / (maxY - minY)) * (height - 150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
             g2D.setColor(Color.DARK_GRAY);
-            g2D.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100));
+            g2D.drawString(n.getKey() + "", (int) (((n.getLocation().x() - minX) / (maxX - minX)) * (width - 50) - kRADIUS + 25), (int) (((n.getLocation().y() - minY) / (maxY - minY)) * (height - 150) - kRADIUS + 100));
         }
     }
 
@@ -180,58 +181,187 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == addNode) {
-
-            String coordinatesX = JOptionPane.showInputDialog("Enter X Coordinate new Node");
-            String coordinatesY = JOptionPane.showInputDialog("Enter Y Coordinate new Node");
-            String coordinatesZ = JOptionPane.showInputDialog("Enter Z Coordinate new Node");
-            String ID = JOptionPane.showInputDialog("Enter ID new Node");
-            int id = Integer.parseInt(ID);
-            NodeData n1 = new Node(coordinatesX + "," + coordinatesY + "," + coordinatesZ ,id);
-            dwga.getGraph().addNode(n1);
-            repaint();
+            while (true) {
+                try {
+                    String coordinatesX = JOptionPane.showInputDialog("Enter X Coordinate new Node");
+                    if (coordinatesX == null) {
+                        break;
+                    }
+                    String coordinatesY = JOptionPane.showInputDialog("Enter Y Coordinate new Node");
+                    if (coordinatesY == null) {
+                        break;
+                    }
+                    String coordinatesZ = JOptionPane.showInputDialog("Enter Z Coordinate new Node");
+                    if (coordinatesZ == null) {
+                        break;
+                    }
+                    String ID = JOptionPane.showInputDialog("Enter ID new Node");
+                    if (ID == null) {
+                        break;
+                    }
+                    int id = Integer.parseInt(ID);
+                    NodeData n1 = new Node(coordinatesX + "," + coordinatesY + "," + coordinatesZ, id);
+                    dwga.getGraph().addNode(n1);
+                    repaint();
+                    break;
+                } catch (Exception exc) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == removeNode) {
-            String id = JOptionPane.showInputDialog("Enter the ID of the node you want to remove");
-            dwga.getGraph().removeNode(Integer.parseInt(id));
-            repaint();
+            while (true) {
+                try {
+                    String id = JOptionPane.showInputDialog("Enter the ID of the node you want to remove");
+                    if (id == null) break;
+                    dwga.getGraph().removeNode(Integer.parseInt(id));
+                    repaint();
+                    break;
+                } catch (Exception exc) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == addEdge) {
-            String coordinates1 =  JOptionPane.showInputDialog("Enter Source node key");
-            String coordinates2 =  JOptionPane.showInputDialog("Enter Destination node key");
-            String coordinates3 =  JOptionPane.showInputDialog("Enter edge weight");
-            int sourceKey = Integer.parseInt(coordinates1);
-            int destKey = Integer.parseInt(coordinates2);
-            double weight = Double.parseDouble(coordinates3);
-            dwga.getGraph().connect(sourceKey, destKey, weight);
-            repaint();
+            while (true) {
+                try {
+                    String source_node_key = JOptionPane.showInputDialog("Enter Source node key");
+                    if (source_node_key == null) break;
+                    String destination_node_key = JOptionPane.showInputDialog("Enter Destination node key");
+                    if (destination_node_key == null) break;
+                    String weight = JOptionPane.showInputDialog("Enter edge weight");
+                    if (weight == null) break;
+                    int sourceKey = Integer.parseInt(source_node_key);
+                    int destKey = Integer.parseInt(destination_node_key);
+                    double weightD = Double.parseDouble(weight);
+                    dwga.getGraph().connect(sourceKey, destKey, weightD);
+                    repaint();
+                    break;
+                } catch (Exception exp) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == removeEdge) {
-            System.out.println("will replace with removing edge");
+            while (true) {
+                try {
+                    String sourceNode = JOptionPane.showInputDialog("Enter Source node key");
+                    if (sourceNode == null) break;
+                    String destNode = JOptionPane.showInputDialog("Enter Destination node key");
+                    if (destNode == null) break;
+                    int sourceKey = Integer.parseInt(sourceNode);
+                    int destKey = Integer.parseInt(destNode);
+                    dwga.getGraph().removeEdge(sourceKey, destKey);
+                    repaint();
+                    break;
+                } catch (Exception exp) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == isConnected) {
-            if(dwga.isConnected()){
+            if (dwga.isConnected()) {
                 JOptionPane.showMessageDialog(null, "This graph is connected!", "isConnected", JOptionPane.PLAIN_MESSAGE);
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(null, "This graph is NOT connected!", "isConnected", JOptionPane.PLAIN_MESSAGE);
             }
         }
         if (e.getSource() == shortestPathDist) {
-            System.out.println("will replace with shortestPathDist");
+            while (true) {
+                try {
+                    String sourceNode = JOptionPane.showInputDialog("Enter Source node key");
+                    if (sourceNode == null) break;
+                    String destNode = JOptionPane.showInputDialog("Enter Destination node key");
+                    if (destNode == null) break;
+                    double shortestdist = dwga.shortestPathDist(Integer.parseInt(sourceNode), Integer.parseInt(destNode));
+                    JOptionPane.showMessageDialog(null, "The shortest Distance from Node: " + sourceNode + " to Node: " + destNode + " is " + shortestdist, "ShortestPathDist", JOptionPane.PLAIN_MESSAGE);
+                    break;
+                } catch (Exception exp) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == shortestPath) {
-            System.out.println("will replace with shortestPath");
+            while (true) {
+                try {
+                    String sourceNode = JOptionPane.showInputDialog("Enter Source node key");
+                    if (sourceNode == null) break;
+                    String destNode = JOptionPane.showInputDialog("Enter Destination node key");
+                    if (destNode == null) break;
+                    ArrayList<NodeData> path = (ArrayList<NodeData>) dwga.shortestPath(Integer.parseInt(sourceNode), Integer.parseInt(destNode));
+                    int source = path.get(0).getKey();
+                    String pathString = source + "";
+                    for (int i = 1; i < path.size(); i++) {
+                        pathString += " -> " + path.get(i).getKey();
+                    }
+                    JOptionPane.showMessageDialog(null, "The shortest Distance Path from Node: " + sourceNode + " to Node: " + destNode + " is " + pathString, "Shortest Path", JOptionPane.PLAIN_MESSAGE);
+                    break;
+                } catch (Exception exp) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == center) {
-            System.out.println("will replace with center");
+            if (!dwga.isConnected()) {
+                JOptionPane.showMessageDialog(null, "The graph is not connected, therefore there is no center!", "Center", JOptionPane.PLAIN_MESSAGE);
+            }
+            int centerNode = dwga.center().getKey();
+            JOptionPane.showMessageDialog(null, "The center node of the graph is " + centerNode, "Center", JOptionPane.PLAIN_MESSAGE);
         }
         if (e.getSource() == tspGreedy) {
-            System.out.println("will replace with tsp greedy");
+            while (true) {
+                try {
+                    String city = "";
+                    ArrayList<NodeData> cities = new ArrayList<>();
+                    String amountS = JOptionPane.showInputDialog("Enter amount of nodes you'd like to add to set Cities");
+                    if (amountS == null) break;
+                    int amount = Integer.parseInt(amountS);
+                    while (amount != 0) {
+                        city = JOptionPane.showInputDialog("Enter node to be included in cities");
+                        if (city == null) break;
+                        cities.add(dwga.getGraph().getNode(Integer.parseInt(city)));
+                        amount--;
+                    }
+                    ArrayList<NodeData> tspPath = (ArrayList<NodeData>) dwga.tsp(cities);
+                    int tspSrc = tspPath.get(0).getKey();
+                    String tspString = tspSrc + "";
+                    for (int i = 1; i < tspPath.size(); i++) {
+                        tspString += " -> " + tspPath.get(i).getKey();
+                    }
+                    JOptionPane.showMessageDialog(null, "The shortest path visiting all cities is: " + tspString, "TSP Greedy", JOptionPane.PLAIN_MESSAGE);
+                    break;
+                } catch (Exception exp) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
         if (e.getSource() == tspLong) {
-            System.out.println("will replace with tsp long");
+            while (true) {
+                try {
+                    String city = "";
+                    ArrayList<NodeData> cities = new ArrayList<>();
+                    String amountS = JOptionPane.showInputDialog("Enter amount of nodes you'd like to add to set Cities");
+                    if (amountS == null) break;
+                    int amount = Integer.parseInt(amountS);
+                    while (amount != 0) {
+                        city = JOptionPane.showInputDialog("Enter node to be included in cities");
+                        if (city == null) break;
+                        cities.add(dwga.getGraph().getNode(Integer.parseInt(city)));
+                        amount--;
+                    }
+                    ArrayList<NodeData> tspPath = (ArrayList<NodeData>) ((MyDirectedWeightedGraphAlgorithms) dwga).tspLong(cities);
+                    int tspSrc = tspPath.get(0).getKey();
+                    String tspString = tspSrc + "";
+                    for (int i = 1; i < tspPath.size(); i++) {
+                        tspString += " -> " + tspPath.get(i).getKey();
+                    }
+                    JOptionPane.showMessageDialog(null, "The shortest path visiting all cities is: " + tspString, "TSP Long", JOptionPane.PLAIN_MESSAGE);
+                    break;
+                } catch (Exception exc) {
+                    JOptionPane.showMessageDialog(null, "You've entered incorrect data", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
-
-
 }
+
