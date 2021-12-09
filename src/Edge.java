@@ -1,5 +1,4 @@
 import api.EdgeData;
-import com.google.gson.annotations.Expose;
 
 public class Edge implements EdgeData {
 
