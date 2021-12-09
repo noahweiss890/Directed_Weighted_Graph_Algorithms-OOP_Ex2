@@ -70,9 +70,12 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     //The function calls DFS_visit on first node in graph. The function also calls DFS_visit on the transpose of the graph starting from the same node.
     //If after both rounds of DFS_visit, every node in the graph has been touched, the function returns true.
     public boolean isConnected() {
-        NodeData n = graph.getNode(0); //any node to start
-        DFS_visit(graph, n); //DFS on graph
+        if(graph.nodeSize() == 0){
+            return true;
+        }
         Iterator<NodeData> nIterator = graph.nodeIter(); //goes through all nodes in graph
+        NodeData n = nIterator.next(); //any node to start
+        DFS_visit(graph, n); //DFS on graph
         while (nIterator.hasNext()) {
             NodeData gNode = nIterator.next();
             if (gNode.getTag() == 0) //color of node is white, so hasn't been touched

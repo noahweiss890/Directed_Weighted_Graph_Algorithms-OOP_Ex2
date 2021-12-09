@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 
@@ -196,17 +197,22 @@ public class Window extends JFrame implements ActionListener {
             repaint();
         }
         if (e.getSource() == addEdge) {
-            String coordinates1 =  JOptionPane.showInputDialog("Enter Source node key");
-            String coordinates2 =  JOptionPane.showInputDialog("Enter Destination node key");
-            String coordinates3 =  JOptionPane.showInputDialog("Enter edge weight");
-            int sourceKey = Integer.parseInt(coordinates1);
-            int destKey = Integer.parseInt(coordinates2);
-            double weight = Double.parseDouble(coordinates3);
-            dwga.getGraph().connect(sourceKey, destKey, weight);
+            String source_node_key =  JOptionPane.showInputDialog("Enter Source node key");
+            String destination_node_key =  JOptionPane.showInputDialog("Enter Destination node key");
+            String weight =  JOptionPane.showInputDialog("Enter edge weight");
+            int sourceKey = Integer.parseInt(source_node_key);
+            int destKey = Integer.parseInt(destination_node_key);
+            double weightD = Double.parseDouble(weight);
+            dwga.getGraph().connect(sourceKey, destKey, weightD);
             repaint();
         }
         if (e.getSource() == removeEdge) {
-            System.out.println("will replace with removing edge");
+            String sourceNode =  JOptionPane.showInputDialog("Enter Source node key");
+            String destNode =  JOptionPane.showInputDialog("Enter Destination node key");
+            int sourceKey = Integer.parseInt(sourceNode);
+            int destKey = Integer.parseInt(destNode);
+            dwga.getGraph().removeEdge(sourceKey, destKey);
+            repaint();
         }
         if (e.getSource() == isConnected) {
             if(dwga.isConnected()){
@@ -217,19 +223,63 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == shortestPathDist) {
-            System.out.println("will replace with shortestPathDist");
+            String sourceNode =  JOptionPane.showInputDialog("Enter Source node key");
+            String destNode =  JOptionPane.showInputDialog("Enter Destination node key");
+            double shortestdist = dwga.shortestPathDist(Integer.parseInt(sourceNode), Integer.parseInt(destNode));
+            JOptionPane.showMessageDialog(null, "The shortest Distance from Node: " + sourceNode + " to Node: " + destNode + " is " + shortestdist, "ShortestPathDist", JOptionPane.PLAIN_MESSAGE);
         }
         if (e.getSource() == shortestPath) {
-            System.out.println("will replace with shortestPath");
+            String sourceNode =  JOptionPane.showInputDialog("Enter Source node key");
+            String destNode =  JOptionPane.showInputDialog("Enter Destination node key");
+            ArrayList<NodeData> path = (ArrayList<NodeData>)dwga.shortestPath(Integer.parseInt(sourceNode), Integer.parseInt(destNode));
+            int source = path.get(0).getKey();
+            String pathString = source + "";
+            for (int i = 1; i < path.size(); i++) {
+                pathString += " -> " + path.get(i).getKey();
+            }
+            JOptionPane.showMessageDialog(null, "The shortest Distance Path from Node: " + sourceNode + " to Node: " + destNode + " is " + pathString, "Shortest Path", JOptionPane.PLAIN_MESSAGE);
         }
         if (e.getSource() == center) {
-            System.out.println("will replace with center");
+            if(!dwga.isConnected()){
+                JOptionPane.showMessageDialog(null, "The graph is not connected, therefore ther is no center!", "Center",JOptionPane.PLAIN_MESSAGE);
+            }
+           int centerNode = dwga.center().getKey();
+           JOptionPane.showMessageDialog(null, "The center node of the graph is " + centerNode, "Center",JOptionPane.PLAIN_MESSAGE);
         }
         if (e.getSource() == tspGreedy) {
-            System.out.println("will replace with tsp greedy");
+           String city = "";
+           ArrayList<NodeData> cities = new ArrayList<>();
+           int amount =Integer.parseInt(JOptionPane.showInputDialog("Enter amount of nodes you'd like to add to set Cities"));
+           while(amount != 0){
+               city = JOptionPane.showInputDialog("Enter node to be included in cities");
+               cities.add(dwga.getGraph().getNode(Integer.parseInt(city)));
+               amount--;
+           }
+          ArrayList<NodeData> tspPath = (ArrayList<NodeData>) dwga.tsp(cities);
+           int tspSrc = tspPath.get(0).getKey();
+           String tspString = tspSrc + "";
+            for (int i = 1; i < tspPath.size(); i++) {
+                tspString += " -> " + tspPath.get(i).getKey();
+            }
+            JOptionPane.showMessageDialog(null, "The shortest path visiting all cities is: " + tspString, "TSP Greedy", JOptionPane.PLAIN_MESSAGE);
         }
         if (e.getSource() == tspLong) {
-            System.out.println("will replace with tsp long");
+            String city = "";
+            ArrayList<NodeData> cities = new ArrayList<>();
+            int amount =Integer.parseInt(JOptionPane.showInputDialog("Enter amount of nodes you'd like to add to set Cities"));
+            while(amount != 0){
+                city = JOptionPane.showInputDialog("Enter node to be included in cities");
+                cities.add(dwga.getGraph().getNode(Integer.parseInt(city)));
+                amount--;
+            }
+            ArrayList<NodeData> tspPath = (ArrayList<NodeData>) ((MyDirectedWeightedGraphAlgorithms)dwga).tspLong(cities);
+            int tspSrc = tspPath.get(0).getKey();
+            String tspString = tspSrc + "";
+            for (int i = 1; i < tspPath.size(); i++) {
+                tspString += " -> " + tspPath.get(i).getKey();
+            }
+            JOptionPane.showMessageDialog(null, "The shortest path visiting all cities is: " + tspString, "TSP Long", JOptionPane.PLAIN_MESSAGE);
+
         }
     }
 
