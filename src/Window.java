@@ -65,11 +65,7 @@ public class Window extends JFrame implements ActionListener {
         removeNode = new JMenuItem("Remove Node");
         addEdge = new JMenuItem("Add Edge");
         removeEdge = new JMenuItem("Remove Edge");
-        connect = new JMenuItem("Connect");
 
-        init = new JMenuItem("Init");
-        getGraph = new JMenuItem("getGraph");
-        copy = new JMenuItem("copy");
         isConnected = new JMenuItem("isConnected");
         shortestPathDist = new JMenuItem("shortestPathDist");
         shortestPath = new JMenuItem("shortestPath");
@@ -84,11 +80,7 @@ public class Window extends JFrame implements ActionListener {
         removeNode.addActionListener(this);
         addEdge.addActionListener(this);
         removeEdge.addActionListener(this);
-        connect.addActionListener(this);
 
-        init.addActionListener(this);
-        getGraph.addActionListener(this);
-        copy.addActionListener(this);
         isConnected.addActionListener(this);
         shortestPathDist.addActionListener(this);
         shortestPath.addActionListener(this);
@@ -103,14 +95,10 @@ public class Window extends JFrame implements ActionListener {
         editMenu.add(removeNode);
         editMenu.add(addEdge);
         editMenu.add(removeEdge);
-        editMenu.add(connect);
 
         tspMenu.add(tspGreedy);
         tspMenu.add(tspLong);
 
-        algoMenu.add(init);
-        algoMenu.add(getGraph);
-        algoMenu.add(copy);
         algoMenu.add(isConnected);
         algoMenu.add(shortestPathDist);
         algoMenu.add(shortestPath);
@@ -192,6 +180,7 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == addNode) {
+
             String coordinatesX = JOptionPane.showInputDialog("Enter X Coordinate new Node");
             String coordinatesY = JOptionPane.showInputDialog("Enter Y Coordinate new Node");
             String coordinatesZ = JOptionPane.showInputDialog("Enter Z Coordinate new Node");
@@ -207,25 +196,25 @@ public class Window extends JFrame implements ActionListener {
             repaint();
         }
         if (e.getSource() == addEdge) {
-            System.out.println("will replace with adding edge");
+            String coordinates1 =  JOptionPane.showInputDialog("Enter Source node key");
+            String coordinates2 =  JOptionPane.showInputDialog("Enter Destination node key");
+            String coordinates3 =  JOptionPane.showInputDialog("Enter edge weight");
+            int sourceKey = Integer.parseInt(coordinates1);
+            int destKey = Integer.parseInt(coordinates2);
+            double weight = Double.parseDouble(coordinates3);
+            dwga.getGraph().connect(sourceKey, destKey, weight);
+            repaint();
         }
         if (e.getSource() == removeEdge) {
             System.out.println("will replace with removing edge");
         }
-        if (e.getSource() == connect) {
-            System.out.println("will replace with connect");
-        }
-        if (e.getSource() == init) {
-            System.out.println("will replace with init");
-        }
-        if (e.getSource() == getGraph) {
-            System.out.println("will replace with getgraph");
-        }
-        if (e.getSource() == copy) {
-            System.out.println("will replace with copy");
-        }
         if (e.getSource() == isConnected) {
-            System.out.println("will replace with isConnected");
+            if(dwga.isConnected()){
+                JOptionPane.showMessageDialog(null, "This graph is connected!", "isConnected", JOptionPane.PLAIN_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "This graph is NOT connected!", "isConnected", JOptionPane.PLAIN_MESSAGE);
+            }
         }
         if (e.getSource() == shortestPathDist) {
             System.out.println("will replace with shortestPathDist");
