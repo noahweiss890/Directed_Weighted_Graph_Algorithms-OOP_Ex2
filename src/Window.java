@@ -122,10 +122,6 @@ public class Window extends JFrame implements ActionListener {
         menuBar.add(algoMenu);
 
         this.setJMenuBar(menuBar);
-//        menuPanel.add(menuBar);
-//        this.add(menuPanel);
-//        this.pack();
-//        return menuBar;
     }
 
     @Override
@@ -176,7 +172,6 @@ public class Window extends JFrame implements ActionListener {
         }
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loadItem) {
@@ -186,7 +181,7 @@ public class Window extends JFrame implements ActionListener {
                 String file = jFileChooser.getSelectedFile().getAbsolutePath();
                 dwga.load(file);
             }
-            this.repaint();
+            repaint();
         }
         if (e.getSource() == saveItem) {
             JFileChooser jFileChooser = new JFileChooser();
@@ -197,20 +192,19 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == addNode) {
-            String coordinates1 =  JOptionPane.showInputDialog("Enter X Coordinate new Node");
-           // Double x = Double.parseDouble(coordinates1);
-            String coordinates2 =  JOptionPane.showInputDialog("Enter Y Coordinate new Node");
-            //Double y = Double.parseDouble(coordinates2);
-            String coordinates3 =  JOptionPane.showInputDialog("Enter Z Coordinate new Node");
-            //Double z = Double.parseDouble(coordinates3);
-            String coordinates4 =  JOptionPane.showInputDialog("Enter ID new Node");
-            int id = Integer.parseInt(coordinates4);
-            NodeData n1 = new Node(coordinates1 + "," + coordinates2 + "," + coordinates3 ,id);
+            String coordinatesX = JOptionPane.showInputDialog("Enter X Coordinate new Node");
+            String coordinatesY = JOptionPane.showInputDialog("Enter Y Coordinate new Node");
+            String coordinatesZ = JOptionPane.showInputDialog("Enter Z Coordinate new Node");
+            String ID = JOptionPane.showInputDialog("Enter ID new Node");
+            int id = Integer.parseInt(ID);
+            NodeData n1 = new Node(coordinatesX + "," + coordinatesY + "," + coordinatesZ ,id);
             dwga.getGraph().addNode(n1);
             repaint();
         }
         if (e.getSource() == removeNode) {
-            System.out.println("will replace with removing node");
+            String id = JOptionPane.showInputDialog("Enter the ID of the node you want to remove");
+            dwga.getGraph().removeNode(Integer.parseInt(id));
+            repaint();
         }
         if (e.getSource() == addEdge) {
             System.out.println("will replace with adding edge");
