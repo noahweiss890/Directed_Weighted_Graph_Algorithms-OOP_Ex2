@@ -252,35 +252,36 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return path;
     }
 
+    //uses a variant of Dijkstra and stops when reaches a city in the list of cities provided
     private NodeData closestNodeFinder(NodeData src, ArrayList<NodeData> cities) {
         PriorityQueue<NodeData> minWeight = new PriorityQueue<>(graph.nodeSize(), new NodeComparator());
-        src.setWeight(0); //  O(1)
+        src.setWeight(0);
         ((Node)src).setPrev(null);
-        minWeight.offer(src); //O(logV)
-        Iterator<NodeData> nIterator = graph.nodeIter(); //O(1)
-        while (nIterator.hasNext()) { //O(V)
+        minWeight.offer(src);
+        Iterator<NodeData> nIterator = graph.nodeIter();
+        while (nIterator.hasNext()) {
             Node n = (Node) nIterator.next();
             if (n.getKey() != src.getKey()) {
                 n.setWeight(Double.MAX_VALUE);
                 n.setPrev(null);
-                minWeight.offer(n); //O(logV)
+                minWeight.offer(n);
             }
         }
         while (!minWeight.isEmpty()) {
-            if (cities.contains(minWeight.peek())) {
+            if (cities.contains(minWeight.peek())) { //stops when the "closest" node is in the list of cities
                 return minWeight.peek();
             }
-            NodeData curr = minWeight.poll(); //O(logV)
+            NodeData curr = minWeight.poll();
             Iterator<EdgeData> eIterator = graph.edgeIter(curr.getKey());
-            while (eIterator.hasNext()) {
+            while (eIterator.hasNext()) { //iterates through neighbors
                 EdgeData neighborEdge = eIterator.next();
                 int neighborKey = neighborEdge.getDest();
                 Node neighbor = (Node) graph.getNode(neighborKey);
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
-                    neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight());
+                    neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight()); //relaxing
                     neighbor.setPrev((Node) curr);
                     minWeight.remove(neighbor);
-                    minWeight.offer(neighbor); //O(logv)
+                    minWeight.offer(neighbor);
                 }
             }
         }
