@@ -231,25 +231,36 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {  // finds a path that visits all of the nodes in the given list. this function is an implementation of a greedy algorithm. this implementation will be quicker than the dynamic algo but will be farther from the true answer
-        ArrayList<NodeData> myPath = new ArrayList<>();
-        ArrayList<NodeData> myCities = new ArrayList<>(cities);
-        NodeData curr = myCities.get(0);  // starts from the first node in the list
-        do {
-            myPath.add(curr);  // adds the curr to the path
-            myCities.remove(curr);  // removes the path from the nodes remaining
-            curr = closestNodeFinder(curr, myCities);  // finds the closest node to the curr node, and then make that the curr the result
-        }
-        while(myCities.size() > 1);  // until there is only one node left in myCities
-        myPath.add(myCities.get(0));  // add the last city to the end
-        ArrayList<NodeData> path = new ArrayList<>();
-        for (int i = 0; i < myPath.size() - 1; i++) {  // checks which nodes we need to pass on the way to get from any two adjacent nodes in myPath and adds them to path
-            ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(myPath.get(i).getKey(), myPath.get(i + 1).getKey());
-            if (i > 0) {
-                addToPath.remove(0);
+        double minWeight = Double.MAX_VALUE;
+        ArrayList<NodeData> minPath = new ArrayList<>(), myPath, myCities;
+        for (int i = 0; i < cities.size(); i++) {
+            myPath = new ArrayList<>();
+            myCities = new ArrayList<>(cities);
+            NodeData curr = myCities.get(i);  // starts from the i'th node in the list
+            do {
+                myPath.add(curr);  // adds the curr to the path
+                myCities.remove(curr);  // removes the path from the nodes remaining
+                curr = closestNodeFinder(curr, myCities);  // finds the closest node to the curr node, and then make that the curr the result
             }
-            path.addAll(addToPath);
+            while (myCities.size() > 1);  // until there is only one node left in myCities
+            myPath.add(myCities.get(0));  // add the last city to the end
+            ArrayList<NodeData> path = new ArrayList<>();
+            double weight = 0;  // to count how much this path will cost in weight
+            for (int j = 0; j < myPath.size() - 1; j++) {  // checks which nodes we need to pass on the way to get from any two adjacent nodes in myPath and adds them to path
+                ArrayList<NodeData> addToPath = (ArrayList<NodeData>) shortestPath(myPath.get(j).getKey(), myPath.get(j + 1).getKey());
+                if (j > 0) {
+                    addToPath.remove(0);
+                }
+                path.addAll(addToPath);
+                weight += shortestPathDist(myPath.get(j).getKey(), myPath.get(j + 1).getKey());
+            }
+            System.out.println("i: " + i + ", weight: " + weight);
+            if(weight < minWeight) {  // is this path shorter than the current minimum path?
+                minWeight = weight;
+                minPath = new ArrayList<>(path);
+            }
         }
-        return path;
+        return minPath;
     }
 
     private NodeData closestNodeFinder(NodeData src, ArrayList<NodeData> cities) {
@@ -287,7 +298,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return null;
     }
 
-    public List<NodeData> tspDynamic(List<NodeData> cities) {  // finds a path that visits all of the nodes in the given list. this function is an implementation of a dynamic algorithm. this implementation will be more exact to the true answer but it will take longer to compute than the previous greedy function
+    public List<NodeData> tspLong(List<NodeData> cities) {  // finds a path that visits all of the nodes in the given list. this function is an implementation of a dynamic algorithm. this implementation will be more exact to the true answer but it will take longer to compute than the previous greedy function
         HashMap<Integer, NodeData> myCities = new HashMap<>();  // this will hold all of the given nodes
         for (NodeData city : cities) {
             myCities.put(city.getKey(), city);
