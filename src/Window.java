@@ -1,4 +1,3 @@
-import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
@@ -18,7 +17,9 @@ public class Window extends JFrame implements ActionListener {
     private Graphics mBuffer_graphics;
     private int height = 700;
     private int width = 1000;
-    private int kRADIUS = 15;
+    private int RADIUS = 15;
+    ArrayList<EdgeData> toHighlight = new ArrayList<>();
+    int center_node = -1;
 
     JPanel menuPanel;
     JMenuBar menuBar;
@@ -32,10 +33,6 @@ public class Window extends JFrame implements ActionListener {
     JMenuItem removeNode;
     JMenuItem addEdge;
     JMenuItem removeEdge;
-    JMenuItem connect;
-    JMenuItem init;
-    JMenuItem getGraph;
-    JMenuItem copy;
     JMenuItem isConnected;
     JMenuItem shortestPathDist;
     JMenuItem shortestPath;
@@ -47,6 +44,8 @@ public class Window extends JFrame implements ActionListener {
     public Window(DirectedWeightedGraphAlgorithms dwga) {
         this.dwga = dwga;
         MenuBar();
+        MyPanel panel = new MyPanel();
+        this.add(panel);
     }
 
     private void MenuBar() {
@@ -146,22 +145,42 @@ public class Window extends JFrame implements ActionListener {
         Iterator<EdgeData> eIt = dwga.getGraph().edgeIter();
         g2D.setStroke(new BasicStroke(3));
         while (eIt.hasNext()) {
-            g2D.setColor(Color.BLUE);
             EdgeData e = eIt.next();
+            g2D.setColor(Color.BLUE);
             NodeData nSrc = dwga.getGraph().getNode(e.getSrc());
             NodeData nDest = dwga.getGraph().getNode(e.getDest());
             g2D.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
             g2D.setColor(Color.MAGENTA);
             double newX = nDest.getLocation().x() - ((nDest.getLocation().x() - nSrc.getLocation().x()) / 4);
             double newY = nDest.getLocation().y() - ((nDest.getLocation().y() - nSrc.getLocation().y()) / 4);
+            g2D.drawString(String.format("%.3f", e.getWeight()), (int)(((newX - minX) / (maxX - minX)) * (width-50) + 25), (int)(((newY - minY) / (maxY - minY)) * (height-150) + 100));
         }
+        if(!toHighlight.isEmpty()) {
+            g2D.setStroke(new BasicStroke(5));
+            g2D.setColor(Color.ORANGE);
+            for(EdgeData e: toHighlight) {
+                NodeData nSrc = dwga.getGraph().getNode(e.getSrc());
+                NodeData nDest = dwga.getGraph().getNode(e.getDest());
+                g2D.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
+            }
+        }
+        g2D.setStroke(new BasicStroke(3));
+        toHighlight.clear();
         nIt = dwga.getGraph().nodeIter();
         while (nIt.hasNext()) {
             NodeData n = nIt.next();
             g2D.setColor(Color.RED);
-            g2D.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
+            g2D.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - RADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - RADIUS + 100), 2 * RADIUS, 2 * RADIUS);
             g2D.setColor(Color.green);
             g2D.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25 - 5), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100 + 5));
+        }
+        if(center_node != -1) {
+            NodeData n = dwga.getGraph().getNode(center_node);
+            g2D.setColor(Color.YELLOW);
+            g2D.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - RADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - RADIUS + 100), 2 * RADIUS, 2 * RADIUS);
+            g2D.setColor(Color.green);
+            g2D.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25 - 5), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100 + 5));
+            center_node = -1;
         }
     }
 
@@ -298,6 +317,10 @@ public class Window extends JFrame implements ActionListener {
                     for (int i = 1; i < path.size(); i++) {
                         pathString += " -> " + path.get(i).getKey();
                     }
+                    for (int i = 0; i < path.size()-1; i++) {
+                        toHighlight.add(dwga.getGraph().getEdge(path.get(i).getKey(),path.get(i+1).getKey()));
+                    }
+                    repaint();
                     JOptionPane.showMessageDialog(null, "The shortest Distance Path from Node: " + sourceNode + " to Node: " + destNode + " is " + pathString, "Shortest Path", JOptionPane.PLAIN_MESSAGE);
                     break;
                 } catch (Exception exp) {
@@ -309,8 +332,12 @@ public class Window extends JFrame implements ActionListener {
             if (!dwga.isConnected()) {
                 JOptionPane.showMessageDialog(null, "The graph is not connected, therefore there is no center!", "Center", JOptionPane.PLAIN_MESSAGE);
             }
-            int centerNode = dwga.center().getKey();
-            JOptionPane.showMessageDialog(null, "The center node of the graph is " + centerNode, "Center", JOptionPane.PLAIN_MESSAGE);
+            else {
+                int centerNode = dwga.center().getKey();
+                center_node = centerNode;
+                repaint();
+                JOptionPane.showMessageDialog(null, "The center node of the graph is " + centerNode, "Center", JOptionPane.PLAIN_MESSAGE);
+            }
         }
         if (e.getSource() == tspGreedy) {
             while (true) {
@@ -332,6 +359,10 @@ public class Window extends JFrame implements ActionListener {
                     for (int i = 1; i < tspPath.size(); i++) {
                         tspString += " -> " + tspPath.get(i).getKey();
                     }
+                    for (int i = 0; i < tspPath.size()-1; i++) {
+                        toHighlight.add(dwga.getGraph().getEdge(tspPath.get(i).getKey(),tspPath.get(i+1).getKey()));
+                    }
+                    repaint();
                     JOptionPane.showMessageDialog(null, "The shortest path visiting all cities is: " + tspString, "TSP Greedy", JOptionPane.PLAIN_MESSAGE);
                     break;
                 } catch (Exception exp) {
@@ -359,6 +390,10 @@ public class Window extends JFrame implements ActionListener {
                     for (int i = 1; i < tspPath.size(); i++) {
                         tspString += " -> " + tspPath.get(i).getKey();
                     }
+                    for (int i = 0; i < tspPath.size()-1; i++) {
+                        toHighlight.add(dwga.getGraph().getEdge(tspPath.get(i).getKey(),tspPath.get(i+1).getKey()));
+                    }
+                    repaint();
                     JOptionPane.showMessageDialog(null, "The shortest path visiting all cities is: " + tspString, "TSP Long", JOptionPane.PLAIN_MESSAGE);
                     break;
                 } catch (Exception exc) {

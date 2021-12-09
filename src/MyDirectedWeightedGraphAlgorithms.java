@@ -257,7 +257,6 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 path.addAll(addToPath);
                 weight += shortestPathDist(myPath.get(j).getKey(), myPath.get(j + 1).getKey());
             }
-            System.out.println("i: " + i + ", weight: " + weight);
             if(weight < minWeight) {  // is this path shorter than the current minimum path?
                 minWeight = weight;
                 minPath = new ArrayList<>(path);

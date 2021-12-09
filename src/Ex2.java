@@ -244,6 +244,6 @@ public class Ex2 {
 //         ga1.init(g1);
 //        System.out.println(ga1.center());
 
-        runGUI("data/bla.json");
+        runGUI("data/G3.json");
     }
 }
