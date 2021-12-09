@@ -144,20 +144,24 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         Iterator<EdgeData> eIt = dwga.getGraph().edgeIter();
-        g2D.setColor(Color.BLUE);
+        g2D.setStroke(new BasicStroke(3));
         while (eIt.hasNext()) {
+            g2D.setColor(Color.BLUE);
             EdgeData e = eIt.next();
             NodeData nSrc = dwga.getGraph().getNode(e.getSrc());
             NodeData nDest = dwga.getGraph().getNode(e.getDest());
-            g2D.drawLine((int) (((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width - 50) + 25), (int) (((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height - 150) + 100), (int) (((nDest.getLocation().x() - minX) / (maxX - minX)) * (width - 50) + 25), (int) (((nDest.getLocation().y() - minY) / (maxY - minY)) * (height - 150) + 100));
+            g2D.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
+            g2D.setColor(Color.MAGENTA);
+            double newX = nDest.getLocation().x() - ((nDest.getLocation().x() - nSrc.getLocation().x()) / 4);
+            double newY = nDest.getLocation().y() - ((nDest.getLocation().y() - nSrc.getLocation().y()) / 4);
         }
         nIt = dwga.getGraph().nodeIter();
         while (nIt.hasNext()) {
             NodeData n = nIt.next();
             g2D.setColor(Color.RED);
-            g2D.fillOval((int) (((n.getLocation().x() - minX) / (maxX - minX)) * (width - 50) - kRADIUS + 25), (int) (((n.getLocation().y() - minY) / (maxY - minY)) * (height - 150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
-            g2D.setColor(Color.DARK_GRAY);
-            g2D.drawString(n.getKey() + "", (int) (((n.getLocation().x() - minX) / (maxX - minX)) * (width - 50) - kRADIUS + 25), (int) (((n.getLocation().y() - minY) / (maxY - minY)) * (height - 150) - kRADIUS + 100));
+            g2D.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
+            g2D.setColor(Color.green);
+            g2D.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25 - 5), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100 + 5));
         }
     }
 
@@ -364,4 +368,3 @@ public class Window extends JFrame implements ActionListener {
         }
     }
 }
-
