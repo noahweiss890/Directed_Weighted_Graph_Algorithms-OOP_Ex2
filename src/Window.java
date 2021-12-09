@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.Iterator;
 
 
@@ -19,11 +20,12 @@ public class Window extends JFrame implements ActionListener {
     private int width = 1000;
     private int kRADIUS = 15;
 
-    JPanel panel;
+    JPanel menuPanel;
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenu editMenu;
     JMenu algoMenu;
+    JMenu tspMenu;
     JMenuItem loadItem;
     JMenuItem saveItem;
     JMenuItem addNode;
@@ -38,29 +40,24 @@ public class Window extends JFrame implements ActionListener {
     JMenuItem shortestPathDist;
     JMenuItem shortestPath;
     JMenuItem center;
-    JMenuItem tsp;
+    JMenuItem tspGreedy;
+    JMenuItem tspLong;
 
 
     public Window(DirectedWeightedGraphAlgorithms dwga) {
         this.dwga = dwga;
-        initGUI();
+        MenuBar();
     }
 
-    private void initGUI() {
-        this.getContentPane().setBackground(Color.white);
-        this.setTitle("Ex2 GUI");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
-        this.setSize(width, height);
-        this.setLayout(null);
+    private void MenuBar() {
+        menuPanel = new JPanel();
+        menuPanel.setBounds(0,0, 1000, 50);
 
-        panel = new JPanel();
-        panel.setBackground(Color.RED);
-        panel.setBounds(0, 0, 50, 1000);
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
         editMenu = new JMenu("Edit Graph");
         algoMenu = new JMenu("Algorithms");
+        tspMenu = new JMenu("TSP");
 
         loadItem = new JMenuItem("Load");
         saveItem = new JMenuItem("Save");
@@ -78,8 +75,8 @@ public class Window extends JFrame implements ActionListener {
         shortestPathDist = new JMenuItem("shortestPathDist");
         shortestPath = new JMenuItem("shortestPath");
         center = new JMenuItem("center");
-        tsp = new JMenuItem("tsp");
-
+        tspGreedy = new JMenuItem("TSP Greedy");
+        tspLong = new JMenuItem("TSP Long");
 
         loadItem.addActionListener(this);
         saveItem.addActionListener(this);
@@ -97,7 +94,8 @@ public class Window extends JFrame implements ActionListener {
         shortestPathDist.addActionListener(this);
         shortestPath.addActionListener(this);
         center.addActionListener(this);
-        tsp.addActionListener(this);
+        tspGreedy.addActionListener(this);
+        tspLong.addActionListener(this);
 
         fileMenu.add(loadItem);
         fileMenu.add(saveItem);
@@ -108,6 +106,9 @@ public class Window extends JFrame implements ActionListener {
         editMenu.add(removeEdge);
         editMenu.add(connect);
 
+        tspMenu.add(tspGreedy);
+        tspMenu.add(tspLong);
+
         algoMenu.add(init);
         algoMenu.add(getGraph);
         algoMenu.add(copy);
@@ -115,15 +116,15 @@ public class Window extends JFrame implements ActionListener {
         algoMenu.add(shortestPathDist);
         algoMenu.add(shortestPath);
         algoMenu.add(center);
-        algoMenu.add(tsp);
+        algoMenu.add(tspMenu);
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(algoMenu);
 
-        panel.add(menuBar);
-        this.setJMenuBar(menuBar);
-        this.add(panel);
+        menuPanel.add(menuBar);
+        this.add(menuPanel);
+        this.pack();
     }
 
     public void paint(Graphics g) {
@@ -137,7 +138,7 @@ public class Window extends JFrame implements ActionListener {
         paintComponents(mBuffer_graphics);
 
         // "Switch" the old "canvas" for the new one
-        g.drawImage(mBuffer_image, 0, 0, this);
+        g2d.drawImage(mBuffer_image, 0, 0, this);
 
     }
 
@@ -160,25 +161,21 @@ public class Window extends JFrame implements ActionListener {
                 maxY = n.getLocation().y();
             }
         }
-//        minX += kRADIUS/width;
-//        maxX -= kRADIUS/width;
-//        minY += kRADIUS/height;
-//        maxY -= kRADIUS/height;
         Iterator<EdgeData> eIt = dwga.getGraph().edgeIter();
         g2d.setColor(Color.BLUE);
         while (eIt.hasNext()) {
             EdgeData e = eIt.next();
             NodeData nSrc = dwga.getGraph().getNode(e.getSrc());
             NodeData nDest = dwga.getGraph().getNode(e.getDest());
-            g2d.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * width), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * height), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * width), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * height));
+            g2d.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
         }
         nIt = dwga.getGraph().nodeIter();
         while (nIt.hasNext()) {
             NodeData n = nIt.next();
             g2d.setColor(Color.RED);
-            g2d.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * width - kRADIUS), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * height - kRADIUS), 2 * kRADIUS, 2 * kRADIUS);
+            g2d.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
             g2d.setColor(Color.DARK_GRAY);
-            g2d.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * width - kRADIUS), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * height - kRADIUS));
+            g2d.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100));
         }
     }
 
@@ -192,13 +189,14 @@ public class Window extends JFrame implements ActionListener {
                 String file = jFileChooser.getSelectedFile().getAbsolutePath();
                 dwga.load(file);
             }
+            this.repaint();
         }
         if (e.getSource() == saveItem) {
             JFileChooser jFileChooser = new JFileChooser();
             int response = jFileChooser.showSaveDialog(null);
             if (response == JFileChooser.APPROVE_OPTION) {
                 File file = new File(jFileChooser.getSelectedFile().getAbsolutePath());
-
+                dwga.save(file.toString());
             }
         }
         if (e.getSource() == addNode) {
@@ -237,8 +235,11 @@ public class Window extends JFrame implements ActionListener {
         if (e.getSource() == center) {
             System.out.println("will replace with center");
         }
-        if (e.getSource() == tsp) {
-            System.out.println("will replace with tsp");
+        if (e.getSource() == tspGreedy) {
+            System.out.println("will replace with tsp greedy");
+        }
+        if (e.getSource() == tspLong) {
+            System.out.println("will replace with tsp long");
         }
     }
 
