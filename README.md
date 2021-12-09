@@ -9,3 +9,5 @@ shortestPathDist:
 We will implement Dijkstra's shortest path algorithm using a min heap priority queue. 
 center:
 We will calculate the eccentricity of each node and return the mim value of them all. 
+tsp:
+We will calculate the cost of the path when starting from each city in the list, and reaching every other city in the list. The function will use a varient of Dijkstra to calculate the shortest path from the starting city until we will reach the first city on the list that has not yet been visited. The algorithim will do the same from that found city, until the next instance of a city from the list. This will go on until we have visited all the citites in the list. The function will check all posibiites for the staring city and return the path with the min cost.
