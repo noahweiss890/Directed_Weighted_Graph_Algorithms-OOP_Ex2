@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileWriter;
 import java.util.Iterator;
 
 
@@ -122,28 +121,26 @@ public class Window extends JFrame implements ActionListener {
         menuBar.add(editMenu);
         menuBar.add(algoMenu);
 
-        menuPanel.add(menuBar);
-        this.add(menuPanel);
-        this.pack();
+        this.setJMenuBar(menuBar);
+//        menuPanel.add(menuBar);
+//        this.add(menuPanel);
+//        this.pack();
+//        return menuBar;
     }
 
+    @Override
     public void paint(Graphics g) {
-
         Graphics2D g2d = (Graphics2D) g;
-        // Create a new "canvas"
         mBuffer_image = createImage(width, height);
         mBuffer_graphics = mBuffer_image.getGraphics();
-
-        // Draw on the new "canvas"
         paintComponents(mBuffer_graphics);
-
-        // "Switch" the old "canvas" for the new one
         g2d.drawImage(mBuffer_image, 0, 0, this);
-
     }
 
+    @Override
     public void paintComponents(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+        super.paintComponents(g);
+        Graphics2D g2D = (Graphics2D) g;
         Iterator<NodeData> nIt = dwga.getGraph().nodeIter();
         double minX = Double.MAX_VALUE, maxX = 0, minY = Double.MAX_VALUE, maxY = 0;
         while(nIt.hasNext()) {
@@ -162,20 +159,20 @@ public class Window extends JFrame implements ActionListener {
             }
         }
         Iterator<EdgeData> eIt = dwga.getGraph().edgeIter();
-        g2d.setColor(Color.BLUE);
+        g2D.setColor(Color.BLUE);
         while (eIt.hasNext()) {
             EdgeData e = eIt.next();
             NodeData nSrc = dwga.getGraph().getNode(e.getSrc());
             NodeData nDest = dwga.getGraph().getNode(e.getDest());
-            g2d.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
+            g2D.drawLine((int)(((nSrc.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nSrc.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100), (int)(((nDest.getLocation().x() - minX) / (maxX - minX)) * (width-50) + 25), (int)(((nDest.getLocation().y() - minY) / (maxY - minY)) * (height-150) + 100));
         }
         nIt = dwga.getGraph().nodeIter();
         while (nIt.hasNext()) {
             NodeData n = nIt.next();
-            g2d.setColor(Color.RED);
-            g2d.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100));
+            g2D.setColor(Color.RED);
+            g2D.fillOval((int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100), 2 * kRADIUS, 2 * kRADIUS);
+            g2D.setColor(Color.DARK_GRAY);
+            g2D.drawString(n.getKey() + "", (int)(((n.getLocation().x() - minX) / (maxX - minX)) * (width-50) - kRADIUS + 25), (int)(((n.getLocation().y() - minY) / (maxY - minY)) * (height-150) - kRADIUS + 100));
         }
     }
 
