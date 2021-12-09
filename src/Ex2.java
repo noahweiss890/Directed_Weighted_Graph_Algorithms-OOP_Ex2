@@ -74,11 +74,18 @@ public class Ex2 {
         Window window = new Window(alg);
         window.setSize(1000, 700);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setLayout(new BorderLayout());
+        window.setLayout(null);
         window.setResizable(false);
         window.setTitle("Ex2 GUI");
         window.getContentPane().setBackground(Color.white);
         window.setVisible(true);
+
+//        JFrame jf = new JFrame();
+//        jf.setTitle("Ex2 GUI");
+////        jf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        jf.setSize(1000, 700);
+//        jf.add(window);
+//        jf.setVisible(true);
 
         // ********************************
     }
