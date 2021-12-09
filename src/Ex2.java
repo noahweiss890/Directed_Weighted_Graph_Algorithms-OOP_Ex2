@@ -4,6 +4,8 @@ import api.NodeData;
 import com.google.gson.*;
 import com.google.gson.GsonBuilder;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -70,6 +72,12 @@ public class Ex2 {
 
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
         Window window = new Window(alg);
+        window.setSize(1000, 700);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setLayout(new BorderLayout());
+        window.setResizable(false);
+        window.setTitle("Ex2 GUI");
+        window.getContentPane().setBackground(Color.white);
         window.setVisible(true);
 
         // ********************************
@@ -136,10 +144,10 @@ public class Ex2 {
 //        somPath.add(ga1.getGraph().getNode(2));
 //        somPath.add(ga1.getGraph().getNode(3));
 //
-//        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/mygraph2.json");
+//        DirectedWeightedGraphAlgorithms dwga = getGrapgAlgo("data/10000Nodes.json");
 //
 //        List<NodeData> somePath = new ArrayList<>();
-//        for (int i = 0; i < 6; i++) {
+//        for (int i = 0; i < 10; i++) {
 //            somePath.add(dwga.getGraph().getNode(i));
 //        }
 //
@@ -222,7 +230,7 @@ public class Ex2 {
 //         pq.remove(r);
 //         pq.offer(r);
 //        System.out.println(pq);
-       // System.out.println(pq);
+//        System.out.println(pq);
 
 //        DirectedWeightedGraph g1 = getGrapg("data/1000Nodes.json");
 //        DirectedWeightedGraphAlgorithms ga1 = new MyDirectedWeightedGraphAlgorithms();
