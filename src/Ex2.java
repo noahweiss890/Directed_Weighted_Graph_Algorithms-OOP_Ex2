@@ -91,6 +91,13 @@ public class Ex2 {
     }
 
     public static void main(String[] args) {
+        DirectedWeightedGraphAlgorithms g1 = getGrapgAlgo("data/100000.json");
+
+        long start = System.currentTimeMillis();
+        System.out.println(g1.isConnected());
+        long end = System.currentTimeMillis();
+
+        System.out.println("TIME: " + (end - start));
 
  //       DirectedWeightedGraph graph2 = getGrapg("data/G2.json");
 //        DirectedWeightedGraph graph3 = getGrapg("data/G3.json");
@@ -188,6 +195,7 @@ public class Ex2 {
 
 
 
+
 //        somPath.add(dwga.getGraph().getNode(0));
 //        somPath.add(dwga.getGraph().getNode(1));
 //        somPath.add(dwga.getGraph().getNode(2));
@@ -244,6 +252,6 @@ public class Ex2 {
 //         ga1.init(g1);
 //        System.out.println(ga1.center());
 
-        runGUI("data/G3.json");
+     //   runGUI("data/bla.json");
     }
 }

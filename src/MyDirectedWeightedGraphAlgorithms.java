@@ -107,28 +107,28 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         if (src == dest) {
             return 0;
         }
-        PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), new NodeComparator());
+        PriorityQueue<NodeData> minWeight = new PriorityQueue<>(new NodeComparator());
         NodeData srcNode = graph.getNode(src);
-        srcNode.setWeight(0); // so that this node will be the starting node
-        minWeight.offer(srcNode);
         Iterator<NodeData> nIterator = graph.nodeIter();
         while (nIterator.hasNext()) {
             Node n = (Node) nIterator.next();
-            if (n.getKey() != srcNode.getKey()) {
+            if(n == srcNode) {
+                srcNode.setWeight(0); // so that this node will be the starting node
+            }
+            else {
                 n.setWeight(Double.MAX_VALUE);
                 n.setPrev(null);
-                minWeight.offer(n);
             }
+            minWeight.offer(n);
         }
-
         while (!minWeight.isEmpty()) {
-            if (minWeight.peek().getWeight() == Double.MAX_VALUE) { //no such path exists
+            NodeData curr = minWeight.poll();
+            if (curr.getWeight() == Double.MAX_VALUE) { //no such path exists
                 return -1;
             }
-            if (minWeight.peek() == graph.getNode(dest)) { //node to be polled is at smallest weight it can be from the src node
-                return minWeight.peek().getWeight();
+            if (curr == graph.getNode(dest)) { //node to be polled is at smallest weight it can be from the src node
+                return curr.getWeight();
             }
-            NodeData curr = minWeight.poll();
             Iterator<EdgeData> eIterator = graph.edgeIter(curr.getKey());
             while (eIterator.hasNext()) {
                 EdgeData neighborEdge = eIterator.next();
@@ -142,44 +142,43 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 }
             }
         }
-        return graph.getNode(dest).getWeight(); //the destination node's weight will be the shortest path dist.
+        return -1;
     }
 
     @Override
     //returns the shortest path from src to dest
     public List<NodeData> shortestPath(int src, int dest) {
-        ArrayList<NodeData> path = new ArrayList<NodeData>();
+        ArrayList<NodeData> path = new ArrayList<>();
         if (src == dest) { //if the values are the same, the list just holds the one value.
             path.add(graph.getNode(src));
             return path;
         }
-        PriorityQueue<NodeData> minWeight = new PriorityQueue<NodeData>(graph.nodeSize(), new NodeComparator());
+        PriorityQueue<NodeData> minWeight = new PriorityQueue<>(new NodeComparator());
         NodeData srcNode = graph.getNode(src);
-        srcNode.setWeight(0); // so that this node will be the starting node
-        ((Node)srcNode).setPrev(null);
-        minWeight.offer(srcNode);
         Iterator<NodeData> nIterator = graph.nodeIter();
         while (nIterator.hasNext()) {
             Node n = (Node) nIterator.next();
-            if (n.getKey() != srcNode.getKey()) {
-                n.setWeight(Double.MAX_VALUE);
-                n.setPrev(null);
-                minWeight.offer(n);
+            if (n == srcNode) {
+                srcNode.setWeight(0); // so that this node will be the starting node
             }
+            else {
+                n.setWeight(Double.MAX_VALUE);
+            }
+            n.setPrev(null);
+            minWeight.offer(n);
         }
         while (!minWeight.isEmpty()) {
-            if (minWeight.peek().getWeight() == Double.MAX_VALUE) { //no such path exists
+            NodeData curr = minWeight.poll();
+            if (curr.getWeight() == Double.MAX_VALUE) { //no such path exists
                 return null;
             }
-            if (minWeight.peek() == graph.getNode(dest)) {
+            if (curr == graph.getNode(dest)) {
                 break;
             }
-            NodeData curr = minWeight.poll();
             Iterator<EdgeData> eIterator = graph.edgeIter(curr.getKey());
             while (eIterator.hasNext()) {
                 EdgeData neighborEdge = eIterator.next();
-                int neighborKey = neighborEdge.getDest();
-                Node neighbor = (Node) graph.getNode(neighborKey);
+                Node neighbor = (Node) graph.getNode(neighborEdge.getDest());
                 if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
                     neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight()); //relaxing
                     neighbor.setPrev((Node)curr);
@@ -188,11 +187,11 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
                 }
             }
         }
-        Node curNode = (Node) graph.getNode(dest);
-        path.add(0, curNode);
-        while (curNode.getPrev() != null) {
-            path.add(0, curNode.getPrev());
-            curNode = curNode.getPrev();
+        Node currNode = (Node) graph.getNode(dest);
+        path.add(currNode);
+        while (currNode.getPrev() != null) {
+            path.add(0, currNode.getPrev());
+            currNode = currNode.getPrev();
         }
         return path;
     }
@@ -200,36 +199,56 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
     @Override
     //returns the center node of the graph
     public NodeData center() {
-        DirectedWeightedGraph copied_graph = this.copy();
         if (!isConnected()) { //if the graph is not connected, return null
             return null;
         }
-        HashMap<Integer, Double> eccentricity_map = new HashMap<>(); //to hold the eccentricity values
-        Iterator<NodeData> nodeIt = copied_graph.nodeIter();
+        double minWeight = Double.MAX_VALUE, weight;
+        NodeData ans = null;
+        Iterator<NodeData> nodeIt = getGraph().nodeIter();
         while (nodeIt.hasNext()) {
-            Node n = (Node) nodeIt.next();
-            int key_n = n.getKey();
-            Node graph_n = (Node) this.getGraph().getNode(key_n);
-            double ecc = 0; //ecc is the highest of the shortest paths
-            Iterator<NodeData> nodeIt2 = copied_graph.nodeIter();
-            while (nodeIt2.hasNext()) {
-                Node u = (Node) nodeIt2.next();
-                int key_u = u.getKey();
-                Node graph_u = (Node) this.getGraph().getNode(key_u);
-                double shortest_dist = shortestPathDist(graph_n.getKey(), graph_u.getKey()); //Dijkstra's algo on n, u
-                if (shortest_dist > ecc) {
-                    ecc = shortest_dist; //update eccentricity
+            NodeData n = nodeIt.next();
+            weight = eccentricity(n, minWeight);
+            if(weight != -1 && weight < minWeight) {
+                minWeight = weight;
+                ans = n;
+            }
+        }
+        return ans;
+    }
+
+    private double eccentricity(NodeData n, double minWeight) {
+        PriorityQueue<NodeData> dijakstra = new PriorityQueue<>(new NodeComparator());
+        Iterator<NodeData> nIter = graph.nodeIter();
+        while(nIter.hasNext()) {
+            NodeData node = nIter.next();
+            if(node == n) {
+                n.setWeight(0);
+            }
+            else {
+                node.setWeight(Double.MAX_VALUE);
+            }
+            dijakstra.offer(node);
+        }
+        while(!dijakstra.isEmpty()) {
+            NodeData curr = dijakstra.poll();
+            if(dijakstra.isEmpty()) {
+                return curr.getWeight();
+            }
+            if(curr.getWeight() > minWeight) {
+                return -1;
+            }
+            Iterator<EdgeData> eIter = graph.edgeIter(curr.getKey());
+            while (eIter.hasNext()) {
+                EdgeData neighborEdge = eIter.next();
+                Node neighbor = (Node) graph.getNode(neighborEdge.getDest());
+                if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
+                    neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight()); //relaxing
+                    dijakstra.remove(neighbor);
+                    dijakstra.offer(neighbor);
                 }
             }
-            eccentricity_map.put(n.getKey(), ecc); //O(1)
         }
-        Map.Entry<Integer, Double> min = null;
-        for (Map.Entry<Integer, Double> entry : eccentricity_map.entrySet()) { //O(n)
-            if (min == null || min.getValue() > entry.getValue()) {
-                min = entry;
-            }
-        }
-        return copied_graph.getNode(min.getKey());
+        return -1;
     }
 
     @Override
@@ -303,16 +322,11 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
 
     public List<NodeData> tspLong(List<NodeData> cities) {  // finds a path that visits all of the nodes in the given list. this function is an implementation of a dynamic algorithm. this implementation will be more exact to the true answer but it will take longer to compute than the previous greedy function
         HashMap<Integer, NodeData> myCities = new HashMap<>();  // this will hold all of the given nodes
+        HashMap<Integer, HashMap<Integer,Double>> distances = new HashMap<>();  // this will hold all of the shortest distances from any two nodes
         for (NodeData city : cities) {
             myCities.put(city.getKey(), city);
-        }
-        HashMap<String, Double> distances = new HashMap<>();  // this will hold all of the shortest distances from any two nodes
-        for (int i : myCities.keySet()) {
-            for (int j : myCities.keySet()) {
-                if (i != j) {
-                    distances.put(myCities.get(i).getKey() + "->" + myCities.get(j).getKey(), shortestPathDist(myCities.get(i).getKey(), myCities.get(j).getKey()));
-                }
-            }
+            HashMap<Integer,Double> distList = shortestPathDistList(city);
+            distances.put(city.getKey(),distList);
         }
         NodeData start = cities.get(0);  // start from the first node in cities
         HashMap<Integer, NodeData> temp = new HashMap<>(myCities);
@@ -332,7 +346,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         return path;
     }
 
-    private double tspHelper(ArrayList<NodeData> path, HashMap<String, Double> distances, HashMap<Integer, NodeData> cities, int curr) {  // recursive function that goes through the options of the next possible node and returns the weight of the minimum option
+    private double tspHelper(ArrayList<NodeData> path, HashMap<Integer, HashMap<Integer, Double>> distances, HashMap<Integer, NodeData> cities, int curr) {  // recursive function that goes through the options of the next possible node and returns the weight of the minimum option
         if (cities.size() == 0) {  // base case, all nodes have been visited
             return 0;
         }
@@ -343,7 +357,7 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
             HashMap<Integer, NodeData> temp = new HashMap<>(cities);
             temp.remove(n.getKey());
             ArrayList<NodeData> tempPath = new ArrayList<>(path);
-            double dist = distances.get(curr + "->" + n.getKey());
+            double dist = distances.get(curr).get(n.getKey());
             if (dist != -1) {  // if there's a path between curr n.getKey()
                 weight = dist + tspHelper(tempPath, distances, temp, n.getKey());
                 if (weight < minWeight) {
@@ -358,6 +372,37 @@ public class MyDirectedWeightedGraphAlgorithms implements DirectedWeightedGraphA
         path.add(ans);
         return minWeight;
     }
+
+    private HashMap<Integer, Double> shortestPathDistList(NodeData city) {
+        HashMap<Integer, Double> distance = new HashMap<>();
+        PriorityQueue<NodeData> dijakstra = new PriorityQueue<>(new NodeComparator());
+        Iterator<NodeData> nIter = graph.nodeIter();
+        while (nIter.hasNext()) {
+            NodeData node = nIter.next();
+            if (node == city) {
+                city.setWeight(0);
+            } else {
+                node.setWeight(Double.MAX_VALUE);
+            }
+            dijakstra.offer(node);
+        }
+        while (!dijakstra.isEmpty()) {
+            NodeData curr = dijakstra.poll();
+            distance.put(curr.getKey(), curr.getWeight());
+            Iterator<EdgeData> eIter = graph.edgeIter(curr.getKey());
+            while (eIter.hasNext()) {
+                EdgeData neighborEdge = eIter.next();
+                Node neighbor = (Node) graph.getNode(neighborEdge.getDest());
+                if (neighbor.getWeight() > (curr.getWeight() + neighborEdge.getWeight())) {
+                    neighbor.setWeight(curr.getWeight() + neighborEdge.getWeight()); //relaxing
+                    dijakstra.remove(neighbor);
+                    dijakstra.offer(neighbor);
+                }
+            }
+        }
+        return distance;
+    }
+
 
     @Override
     public boolean save(String file) {  // saves the graph into a json file
