@@ -51,6 +51,10 @@ public class Edge implements EdgeData {
         this.tag = t;
     }
 
+    public void setWeight(double weight) {
+        this.w = weight;
+    }
+
     @Override
     public String toString() {
         return "Edge{" +
