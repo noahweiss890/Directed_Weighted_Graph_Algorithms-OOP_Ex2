@@ -245,6 +245,10 @@ public class Window extends JFrame implements ActionListener {
                         break;
                     }
                     int id = Integer.parseInt(ID);
+                    if (dwga.getGraph().getNode(id) != null) {
+                        JOptionPane.showMessageDialog(null, "This Node ID already Exists!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     NodeData n1 = new Node(coordinatesX + "," + coordinatesY + "," + coordinatesZ, id);
                     dwga.getGraph().addNode(n1);
                     repaint();
@@ -259,6 +263,10 @@ public class Window extends JFrame implements ActionListener {
                 try {
                     String id = JOptionPane.showInputDialog(null, "Enter the ID of the node you want to remove", "Remove Node", JOptionPane.QUESTION_MESSAGE);
                     if (id == null) break;
+                    if (dwga.getGraph().getNode(Integer.parseInt(id)) == null) {
+                        JOptionPane.showMessageDialog(null, "That Node ID doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     dwga.getGraph().removeNode(Integer.parseInt(id));
                     repaint();
                     break;
@@ -272,13 +280,33 @@ public class Window extends JFrame implements ActionListener {
                 try {
                     String source_node_key = JOptionPane.showInputDialog(null, "Enter Source node key", " Add Edge", JOptionPane.QUESTION_MESSAGE);
                     if (source_node_key == null) break;
+                    int sourceKey = Integer.parseInt(source_node_key);
+                    if (dwga.getGraph().getNode(sourceKey) == null) {
+                        JOptionPane.showMessageDialog(null, "The source Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     String destination_node_key = JOptionPane.showInputDialog(null, "Enter Destination node key", "Add Edge", JOptionPane.QUESTION_MESSAGE);
                     if (destination_node_key == null) break;
+                    int destKey = Integer.parseInt(destination_node_key);
+                    if (dwga.getGraph().getNode(destKey) == null) {
+                        JOptionPane.showMessageDialog(null, "The destination Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    if (sourceKey == destKey) {
+                        JOptionPane.showMessageDialog(null, "The source and destination cannot be the same!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     String weight = JOptionPane.showInputDialog(null, "Enter edge weight", "Add Edge", JOptionPane.QUESTION_MESSAGE);
                     if (weight == null) break;
-                    int sourceKey = Integer.parseInt(source_node_key);
-                    int destKey = Integer.parseInt(destination_node_key);
                     double weightD = Double.parseDouble(weight);
+                    if (weightD <= 0) {
+                        JOptionPane.showMessageDialog(null, "The weight cannot be the negative or zero!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    if (dwga.getGraph().getEdge(sourceKey, destKey) != null) {
+                        ((Edge)dwga.getGraph().getEdge(sourceKey, destKey)).setWeight(weightD);
+                        JOptionPane.showMessageDialog(null, "The edge weight was updated", "Error", JOptionPane.INFORMATION_MESSAGE);
+                    }
                     dwga.getGraph().connect(sourceKey, destKey, weightD);
                     repaint();
                     break;
@@ -292,10 +320,26 @@ public class Window extends JFrame implements ActionListener {
                 try {
                     String sourceNode = JOptionPane.showInputDialog(null, "Enter Source node key", "Remove Edge", JOptionPane.QUESTION_MESSAGE);
                     if (sourceNode == null) break;
+                    int sourceKey = Integer.parseInt(sourceNode);
+                    if (dwga.getGraph().getNode(sourceKey) == null) {
+                        JOptionPane.showMessageDialog(null, "The source Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     String destNode = JOptionPane.showInputDialog(null, "Enter Destination node key", "Remove Edge", JOptionPane.QUESTION_MESSAGE);
                     if (destNode == null) break;
-                    int sourceKey = Integer.parseInt(sourceNode);
                     int destKey = Integer.parseInt(destNode);
+                    if (dwga.getGraph().getNode(destKey) == null) {
+                        JOptionPane.showMessageDialog(null, "The destination Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    if (sourceKey == destKey) {
+                        JOptionPane.showMessageDialog(null, "The source and destination cannot be the same!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    if (dwga.getGraph().getEdge(sourceKey, destKey) == null) {
+                        JOptionPane.showMessageDialog(null, "There is no edge between these two Nodes!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     dwga.getGraph().removeEdge(sourceKey, destKey);
                     repaint();
                     break;
@@ -316,8 +360,16 @@ public class Window extends JFrame implements ActionListener {
                 try {
                     String sourceNode = JOptionPane.showInputDialog(null, "Enter Source node key", "Shortest Path Distance", JOptionPane.QUESTION_MESSAGE);
                     if (sourceNode == null) break;
+                    if (dwga.getGraph().getNode(Integer.parseInt(sourceNode)) == null) {
+                        JOptionPane.showMessageDialog(null, "The source Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     String destNode = JOptionPane.showInputDialog(null, "Enter Destination node key", "Shortest Path Distance", JOptionPane.QUESTION_MESSAGE);
                     if (destNode == null) break;
+                    if (dwga.getGraph().getNode(Integer.parseInt(destNode)) == null) {
+                        JOptionPane.showMessageDialog(null, "The destination Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     double shortestdist = dwga.shortestPathDist(Integer.parseInt(sourceNode), Integer.parseInt(destNode));
                     if(shortestdist == -1) {
                         JOptionPane.showMessageDialog(null, "There is no path from Node: " + sourceNode + " to Node: " + destNode, "Shortest Path Distance", JOptionPane.INFORMATION_MESSAGE);
@@ -336,8 +388,20 @@ public class Window extends JFrame implements ActionListener {
                 try {
                     String sourceNode = JOptionPane.showInputDialog("Enter Source node key");
                     if (sourceNode == null) break;
+                    if (dwga.getGraph().getNode(Integer.parseInt(sourceNode)) == null) {
+                        JOptionPane.showMessageDialog(null, "The source Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     String destNode = JOptionPane.showInputDialog("Enter Destination node key");
                     if (destNode == null) break;
+                    if (dwga.getGraph().getNode(Integer.parseInt(destNode)) == null) {
+                        JOptionPane.showMessageDialog(null, "The destination Node doesn't exist!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    if (sourceNode.equals(destNode)) {
+                        JOptionPane.showMessageDialog(null, "Please enter two different node IDs!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     ArrayList<NodeData> path = (ArrayList<NodeData>) dwga.shortestPath(Integer.parseInt(sourceNode), Integer.parseInt(destNode));
                     int source = path.get(0).getKey();
                     String pathString = source + "";
@@ -379,9 +443,21 @@ public class Window extends JFrame implements ActionListener {
                     String amountS = JOptionPane.showInputDialog(null, "Enter amount of nodes you'd like to add to set Cities", "TSP Greedy", JOptionPane.PLAIN_MESSAGE);
                     if (amountS == null) break;
                     int amount = Integer.parseInt(amountS);
+                    if (amount <= 0) {
+                        JOptionPane.showMessageDialog(null, "The amount must be positive!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     while (amount != 0) {
                         city = JOptionPane.showInputDialog(null, "Enter node to be included in cities", "TSP Greedy", JOptionPane.PLAIN_MESSAGE);
                         if (city == null) break;
+                        if (dwga.getGraph().getNode(Integer.parseInt(city)) == null) {
+                            JOptionPane.showMessageDialog(null, "This Node doesn't exist! Try again :)", "Error", JOptionPane.ERROR_MESSAGE);
+                            continue;
+                        }
+                        if (cities.contains(dwga.getGraph().getNode(Integer.parseInt(city)))) {
+                            JOptionPane.showMessageDialog(null, "This Node has already been entered in to cities! Try again :)", "Error", JOptionPane.ERROR_MESSAGE);
+                            continue;
+                        }
                         cities.add(dwga.getGraph().getNode(Integer.parseInt(city)));
                         amount--;
                     }
@@ -410,9 +486,21 @@ public class Window extends JFrame implements ActionListener {
                     String amountS = JOptionPane.showInputDialog(null, "Enter amount of nodes you'd like to add to set cities", "TSP Long", JOptionPane.PLAIN_MESSAGE);
                     if (amountS == null) break;
                     int amount = Integer.parseInt(amountS);
+                    if (amount <= 0) {
+                        JOptionPane.showMessageDialog(null, "The amount must be positive!", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     while (amount != 0) {
                         city = JOptionPane.showInputDialog(null, "Enter node to be included in cities", "TSP Long", JOptionPane.PLAIN_MESSAGE);
                         if (city == null) break;
+                        if (dwga.getGraph().getNode(Integer.parseInt(city)) == null) {
+                            JOptionPane.showMessageDialog(null, "This Node doesn't exist! Try again :)", "Error", JOptionPane.ERROR_MESSAGE);
+                            continue;
+                        }
+                        if (cities.contains(dwga.getGraph().getNode(Integer.parseInt(city)))) {
+                            JOptionPane.showMessageDialog(null, "This Node has already been entered in to cities! Try again :)", "Error", JOptionPane.ERROR_MESSAGE);
+                            continue;
+                        }
                         cities.add(dwga.getGraph().getNode(Integer.parseInt(city)));
                         amount--;
                     }
