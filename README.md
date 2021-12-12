@@ -14,7 +14,7 @@ This function will be implemented using a greedy algorithm. We will calculate th
 GUI:
 Our GUI is called Window. Window allows us to visually illustrate the algorithms we wrote on a graph. We used a menu bar with options that all have actionlisters in order to perform different functions depending on the menu item chosen. We used paintComponent to paint to the graph, and to highlight the shortest path and tsp path when those menu items are chosen. The center node will be highlighted when the center algorithm is chosen.
 After running our algorithms on graphs of sizes 1000, 10,000, 100,000 and 1,000,000, we received the following data.
-100: isConnected: 173 ms, SPD(30,900): 53 ms, SP(30,900): 46 ms, Center: 2522 ms, TSP(304,0,900,4300,230,19): 184 ms
-1000: isConnected: 184 ms, SPD(30,9000): 124 ms, SP(30,9000): 90 ms, Center: 541303 ms, TSP(304,0,9000,430,23,19): 2540 ms
-10000: isConnected: 395 ms, SPD(30,9000): 4425 ms, SP(30,9000): 4877 ms, Center: 3 ms (because graph is not connected), TSP(304,0,9000,4300,230,19): 285380 ms
+1000: isConnected: 173 ms, SPD(30,900): 53 ms, SP(30,900): 46 ms, Center: 2522 ms, TSP(304,0,900,4300,230,19): 184 ms
+10000: isConnected: 184 ms, SPD(30,9000): 124 ms, SP(30,9000): 90 ms, Center: 541303 ms, TSP(304,0,9000,430,23,19): 2540 ms
+100000: isConnected: 19660 ms, SPD(30,9000): 5745 ms, SP(30,9000): 6052 ms, Center: TIMED OUT, TSP(304,0,9000,4300,230,19): TIMED OUT
 There was not enough java heap space to create a graph of 1,000,000 nodes. 
